@@ -37,9 +37,9 @@ public class BrowserActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         //getSupportActionBar().setHomeButtonEnabled(true);
         //getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_dehaze_black_24dp);// set drawable icon
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_language_black_24dp);// set drawable icon
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        //getSupportActionBar().setIcon(R.drawable.ic_dehaze_black_24dp);
+        //getSupportActionBar().setIcon(R.drawable.ic_language_black_24dp);
         mWebView = findViewById(R.id.webview);
         mLeftMenuView = findViewById(R.id.navigation_view);
         mDrawerLayout = findViewById(R.id.drawerLayout);

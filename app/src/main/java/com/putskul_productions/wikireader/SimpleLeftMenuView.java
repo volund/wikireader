@@ -66,8 +66,8 @@ public class SimpleLeftMenuView extends NavigationView {
         mProgress = (ProgressBar) findViewById(R.id.progress);
 
         mHeader = (ImageView) findViewById(R.id.header);
-        userName = (TextView) findViewById(R.id.userName);
-        userEmail = (TextView) findViewById(R.id.userEmail);
+       // userName = (TextView) findViewById(R.id.userName);
+     //   userEmail = (TextView) findViewById(R.id.userEmail);
 
         mHeader.setOnClickListener(new View.OnClickListener() {
             @Override
