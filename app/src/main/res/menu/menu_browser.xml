@@ -16,4 +16,9 @@
         android:icon="@drawable/ic_arrow_forward_black_24dp"
         android:title="Forward"
         app:showAsAction="always" />
+    <item
+        android:id="@+id/action_drawer"
+        android:icon="@drawable/ic_dehaze_black_24dp"
+        android:title="Menu"
+        app:showAsAction="always" />
 </menu>

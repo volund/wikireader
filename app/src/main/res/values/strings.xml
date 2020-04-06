@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Wikireader</string>
     <string name="action_settings">Settings</string>
+    <string name="home_id">1</string>
+    <string name="login_id">2</string>
+    <string name="settings_id">3</string>
 </resources>

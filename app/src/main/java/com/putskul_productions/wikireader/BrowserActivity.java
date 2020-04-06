@@ -2,12 +2,15 @@ package com.putskul_productions.wikireader;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -22,7 +25,8 @@ import android.webkit.WebViewClient;
 
 
 public class BrowserActivity extends AppCompatActivity {
-
+    protected SimpleLeftMenuView mLeftMenuView;
+    protected DrawerLayout mDrawerLayout;
     WebView mWebView = null;
 
     @Override
@@ -33,6 +37,28 @@ public class BrowserActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         mWebView = findViewById(R.id.webview);
+        mLeftMenuView = findViewById(R.id.navigation_view);
+        mDrawerLayout = findViewById(R.id.drawerLayout);
+
+
+        mLeftMenuView.setmListener(new OnClickMenu() {
+            @Override
+            public void onClick(String id) {
+                Log.d("MENU", "ic_menu_hamburger clicked: " + id);
+
+                closeDrawer(null);
+/*
+                if (id.equals(getString(R.string.settings_id))) {
+                    Intent intent = new Intent(BrowserActivity.this,
+                            SettingsActivity.class);
+                    MainActivity.this.startActivity(intent);
+                } else if (id.equals(getString(R.string.exit_id))) {
+                    // salir
+                    showRateDialogBeforeExit();
+                }*/
+
+            }
+        });
 
         final BrowserActivity finalThis = this;
 
@@ -185,6 +211,7 @@ public class BrowserActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_browser, menu);
+
         return true;
     }
 
@@ -235,7 +262,28 @@ public class BrowserActivity extends AppCompatActivity {
             });
             builder.show();
         }
-
+        else if (id == R.id.action_drawer) {
+            openDrawer();
+        }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if((mDrawerLayout) != null && (mDrawerLayout.isDrawerOpen(GravityCompat.START)))
+            closeDrawer(null);
+        else {
+            super.onBackPressed();
+        }
+    }
+
+    public void closeDrawer(DrawerLayout.DrawerListener listener) {
+        mDrawerLayout.setDrawerListener(listener);
+        mDrawerLayout.closeDrawers();
+    }
+
+    public void openDrawer() {
+        mDrawerLayout.setDrawerListener(null);
+        mDrawerLayout.openDrawer(GravityCompat.START);
     }
 }
