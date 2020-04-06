@@ -35,7 +35,11 @@ public class BrowserActivity extends AppCompatActivity {
         setContentView(R.layout.activity_browser);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        //getSupportActionBar().setHomeButtonEnabled(true);
+        //getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_dehaze_black_24dp);// set drawable icon
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //getSupportActionBar().setIcon(R.drawable.ic_dehaze_black_24dp);
         mWebView = findViewById(R.id.webview);
         mLeftMenuView = findViewById(R.id.navigation_view);
         mDrawerLayout = findViewById(R.id.drawerLayout);
@@ -222,8 +226,12 @@ public class BrowserActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
+        Log.e("WIKIREADER", "CLICKED!!!\n\n\n");
         final BrowserActivity finalThis = this;
-        if (id == R.id.action_back) {
+        if (id == android.R.id.home) {
+            openDrawer();
+        }
+        else if (id == R.id.action_back) {
             if (mWebView.canGoBack()) {
                 mWebView.goBack();
             }
@@ -261,10 +269,10 @@ public class BrowserActivity extends AppCompatActivity {
                 }
             });
             builder.show();
-        }
+        }/*
         else if (id == R.id.action_drawer) {
             openDrawer();
-        }
+        }*/
         return super.onOptionsItemSelected(item);
     }
 
