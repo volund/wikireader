@@ -5,10 +5,7 @@
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:background="#EDEDED"
-    app:menu="@menu/activity_main_drawer"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    // YOUR CURRENT LAYOUT
 
 
     <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"

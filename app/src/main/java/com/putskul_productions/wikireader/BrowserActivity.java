@@ -244,7 +244,13 @@ public class BrowserActivity extends AppCompatActivity {
         else if (id == R.id.action_forward) {
             mWebView.goForward();
         }
-        else if (id == R.id.action_languages) {
+        else if (id == R.id.action_settings) {
+
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
+
+
+            /*
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             final String[] sourceLangs = Settings.shared.sourceLanguages();
             builder.setItems(sourceLangs, new DialogInterface.OnClickListener() {
@@ -268,7 +274,7 @@ public class BrowserActivity extends AppCompatActivity {
                     builder.show();
                 }
             });
-            builder.show();
+            builder.show();*/
         }/*
         else if (id == R.id.action_drawer) {
             openDrawer();
