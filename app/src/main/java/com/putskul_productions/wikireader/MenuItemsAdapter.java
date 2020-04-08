@@ -1,8 +1,11 @@
 package com.putskul_productions.wikireader;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Color;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -20,18 +23,19 @@ import java.util.List;
 public class MenuItemsAdapter extends BaseAdapter {
 
     private Context mContext;
-    private static String lastSelectedSection;
+    private static Object lastSelectedSection;
 
-    private List<String> mSections;
+    private List<Object> mSections;
     private int currentTextcolor;
     private OnClickMenu mListener;
 
-    public MenuItemsAdapter(Context context, List<String> sections, OnClickMenu listener) {
+    public MenuItemsAdapter(Context context, List<Object> sections, OnClickMenu listener) {
         mContext = context;
         mSections = sections;
         mListener = listener;
-
-        lastSelectedSection = sections.get(0);
+        if (sections.size() > 0) {
+            lastSelectedSection = sections.get(0);
+        }
     }
 
     @Override
@@ -41,7 +45,12 @@ public class MenuItemsAdapter extends BaseAdapter {
 
     @Override
     public String getItem(int position) {
-        return mSections.get(position);
+        Object obj = mSections.get(position);
+        if (obj instanceof String) {
+            return (String)obj;
+        }
+        Site site = (Site)obj;
+        return ((Site) obj).label;
     }
 
     @Override
@@ -54,6 +63,7 @@ public class MenuItemsAdapter extends BaseAdapter {
         return getCustomView(position, convertView, parent);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     public View getCustomView(final int position, View convertView, ViewGroup parent) {
         final MenuItemHolder holder;
 
@@ -75,32 +85,23 @@ public class MenuItemsAdapter extends BaseAdapter {
         Resources r = mContext.getResources();
         int pxMarginSection = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, r.getDisplayMetrics());
 
+        Object obj = mSections.get(position);
+
         holder.position = position;
+        holder.mTitle.setText(getItem(position));
 
-       // holder.mLine.setVisibility(View.GONE);
-        holder.mTitle.setTextColor(mContext.getResources().getColor(R.color.colorPrimary));
-        holder.mIconView.setColorFilter(mContext.getResources().getColor(R.color.colorPrimary));
-
-        if (mSections.get(position).equals(mContext.getString(R.string.login_id))) {
-            holder.mIconView.setImageResource(R.drawable.ic_arrow_back_black_24dp);
-            // holder.mIconView.setColorFilter(mContext.getResources().getColor(R.color.primary));
-            holder.mTitle.setText(mContext.getString(R.string.action_settings));
-           // holder.mLine.setVisibility(View.VISIBLE);
-            //holder.mLayoutItem.setPadding(0, pxMarginSection, 0, pxMarginSection);
+        if (obj instanceof String) {
+            holder.clickable = false;
+            holder.mTitle.setTextColor(Color.LTGRAY);
+            holder.mTitle.setTextSize(20);
+            holder.mTitle.setPadding(35, 40, 30, 0);
         }
-
-        /*
-        else if (mSections.get(position).equals(mContext.getString(R.string.settings_id))) {
-            holder.mIconView.setImageResource(R.drawable.option);
-            holder.mTitle.setText(mContext.getString(R.string.action_settings));
-            holder.mLayoutItem.setPadding(0, pxMarginSection, 0, pxMarginSection);
-            holder.mLine.setVisibility(View.VISIBLE);
-        } else if (mSections.get(position).equals(mContext.getString(R.string.exit_id))) {
-            holder.mIconView.setImageResource(R.drawable.shutdown);
-            holder.mTitle.setText(mContext.getString(R.string.salir));
-            holder.mLayoutItem.setPadding(0, pxMarginSection, 0, pxMarginSection);
-            holder.mLine.setVisibility(View.VISIBLE);
-        }*/
+        else {
+            holder.mTitle.setTextColor(Color.WHITE);
+            holder.mTitle.setTextSize(25);
+            holder.mTitle.setPadding(60, 20, 50, 0);
+            holder.site = (Site)obj;
+        }
 
         holder.mLayoutItem.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -108,28 +109,24 @@ public class MenuItemsAdapter extends BaseAdapter {
 
                 switch (motionEvent.getActionMasked()){
                     case MotionEvent.ACTION_DOWN:
-                        currentTextcolor = holder.mTitle.getCurrentTextColor();
-                        //holder.mLayoutItemSelect.setBackgroundColor(mContext.getResources().getColor(R.color.colorPrimary));
-                        holder.mTitle.setTextColor(mContext.getResources().getColor(R.color.textInfo));
-                        holder.mIconView.setColorFilter(mContext.getResources().getColor(R.color.textInfo));
+                        if (holder.clickable) {
+                            currentTextcolor = holder.mTitle.getCurrentTextColor();
+                            holder.mTitle.setTextColor(mContext.getResources().getColor(R.color.textInfo));
+                        }
                         return true;
 
 
                     case MotionEvent.ACTION_UP:
-
-                        //holder.mLayoutItemSelect.setBackgroundResource(R.color.bgLeftMenu);
-                        holder.mTitle.setTextColor(currentTextcolor);
-                        holder.mIconView.setColorFilter(mContext.getResources().getColor(R.color.colorPrimary));
-
-                        mListener.onClick(mSections.get(position));
+                        if (holder.clickable) {
+                            holder.mTitle.setTextColor(currentTextcolor);
+                            mListener.onClick(holder.site);
+                        }
                         return true;
 
                     case MotionEvent.ACTION_CANCEL:
-
-                       // holder.mLayoutItemSelect.setBackgroundColor(mContext.getResources().getColor(R.color.bgLeftMenu));
-                        holder.mTitle.setTextColor(currentTextcolor);
-                        holder.mIconView.setColorFilter(mContext.getResources().getColor(R.color.colorPrimary));
-
+                        if (holder.clickable) {
+                            holder.mTitle.setTextColor(currentTextcolor);
+                        }
                         return true;
 
                 }
@@ -147,21 +144,14 @@ public class MenuItemsAdapter extends BaseAdapter {
         // butterKnife
         View view;
         TextView mTitle;
-        ImageView mIconView;
         LinearLayout mLayoutItem;
-        View mLine;
-        LinearLayout mLayoutItemSelect;
-
+        boolean clickable = true;
+        Site site;
         int position;
 
         public MenuItemHolder(View itemView) {
             mTitle = itemView.findViewById(R.id.title);
-            mIconView = itemView.findViewById(R.id.icon);
-
             mLayoutItem = itemView.findViewById(R.id.layoutItem);
-            //mLine = itemView.findViewById(R.id.rl_line);
-            //mLayoutItemSelect = itemView.findViewById(R.id.layoutItemSelect);
-
             view = itemView;
         }
 

@@ -14,12 +14,24 @@ import android.widget.Button;
 public class SettingsActivity extends AppCompatActivity {
 
     Button mDictionaryButton;
+    Button mSitesButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setTitle("Settings");
+
+        final Context context = this;
+        mSitesButton = (Button)findViewById(R.id.languagesAndSites);
+        mSitesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, SitesActivity.class);
+                startActivity(intent);
+            }
+        });
 
         mDictionaryButton = (Button)findViewById(R.id.dictionaryButton);
         mDictionaryButton.setOnClickListener(new View.OnClickListener() {

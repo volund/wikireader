@@ -3,6 +3,7 @@ package com.putskul_productions.wikireader;
 import android.content.Context;
 import android.support.design.widget.NavigationView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.SortedMap;
 
 
 public class SimpleLeftMenuView extends NavigationView {
@@ -33,9 +35,7 @@ public class SimpleLeftMenuView extends NavigationView {
         super(context);
         mContext = context;
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
         initLayout();
-
         setData();
     }
 
@@ -43,9 +43,7 @@ public class SimpleLeftMenuView extends NavigationView {
         super(context, attrs);
         mContext = context;
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
         initLayout();
-
         setData();
     }
 
@@ -55,7 +53,6 @@ public class SimpleLeftMenuView extends NavigationView {
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         initLayout();
-
         setData();
     }
     //endregion
@@ -63,12 +60,7 @@ public class SimpleLeftMenuView extends NavigationView {
     private void initLayout(){
         mInflater.inflate(R.layout.layout_left_menu, this);
         mItemsList = (ListView) findViewById(R.id.menu_items_list);
-        mProgress = (ProgressBar) findViewById(R.id.progress);
-
         mHeader = (ImageView) findViewById(R.id.header);
-       // userName = (TextView) findViewById(R.id.userName);
-     //   userEmail = (TextView) findViewById(R.id.userEmail);
-
         mHeader.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -86,26 +78,27 @@ public class SimpleLeftMenuView extends NavigationView {
     }
 
     private void setData() {
+        SortedMap<String, List<Site>> languageSites = Settings.shared.getLanguageSiteMap(getContext());
 
-        List<String> sections = new ArrayList<>();
-
-        sections.add(mContext.getString(R.string.home_id));
-        sections.add(mContext.getString(R.string.login_id));
-        sections.add(mContext.getString(R.string.settings_id));
-        //.........
-        //sections.add(mContext.getString(R.string.exit_id));
+        List<Object> sections = new ArrayList<>();
+        for (String language : languageSites.keySet()) {
+            sections.add(language);
+            sections.addAll(languageSites.get(language));
+        }
 
         mItemsAdapter = new MenuItemsAdapter(mContext, sections, new OnClickMenu() {
             @Override
-            public void onClick(String id) {
-                mItemsAdapter.setLastSelectedSection(id);
+            public void onClick(Site site) {
 
+                //mItemsAdapter.setLastSelectedSection(site);
                 if (mListener != null)
-                    mListener.onClick(id);
+                    mListener.onClick(site);
             }
         });
         mItemsList.setAdapter(mItemsAdapter);
-        mItemsList.setSelection(0);
-        mItemsList.setItemChecked(0, true);
+        mItemsAdapter.notifyDataSetChanged();
+//        mItemsList.setSelection(0);
+//        mItemsList.setItemChecked(0, true);
     }
+
 }

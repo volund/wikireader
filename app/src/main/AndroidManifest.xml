@@ -11,9 +11,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".SettingsActivity">
+        <activity android:name=".SitesActivity"
+            android:parentActivityName="com.putskul_productions.wikireader.SettingsActivity" >
+        </activity>
+
+        <activity android:name=".SettingsActivity"
             android:label="@string/settings_activity_title"
-            android:parentActivityName="com.ptskl.BrowseActivity" >
+            android:parentActivityName="com.putskul_productions.wikireader.BrowserActivity" >
 
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
@@ -30,7 +34,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
     </application>
 
 </manifest>

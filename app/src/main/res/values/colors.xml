@@ -4,6 +4,8 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#3F51B5</color>
     <color name="bgLeftMenu">#3F51B5</color>
+    <color name="bgLeftMenu2">#FF0000</color>
+
     <color name="pressed">#ffffff</color>
     <color name="textInfo">#ffffff</color>
 </resources>

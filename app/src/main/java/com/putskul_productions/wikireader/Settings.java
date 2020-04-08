@@ -2,15 +2,23 @@ package com.putskul_productions.wikireader;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 public class Settings {
     static final Settings shared = new Settings();
+    private PersistentStorage storage = new PersistentStorage();
 
     public String lastVisitedURL(Context context) {
-        String lastURL = value(context, "last-visited-url-" + sourceLanguage(context), null);
+        String lastURL = storage.stringValue(context, "last-visited-url-" + sourceLanguage(context), null);
         if (lastURL == null) {
             lastURL = defaultURLForLanguage(sourceLanguage(context));
         }
@@ -18,7 +26,7 @@ public class Settings {
     }
 
     public void setLastVisitedURL(Context context, String url) {
-        setValue(context, "last-visited-url-" + sourceLanguage(context), url);
+        storage.setStringValue(context, "last-visited-url-" + sourceLanguage(context), url);
     }
 
     private String defaultURLForLanguage(String language) {
@@ -26,24 +34,33 @@ public class Settings {
     }
 
     public String sourceLanguage(Context context) {
-        return value(context, "source-language", "IT");
+        return storage.stringValue(context, "source-language", "IT");
     }
 
     public void setSourceLanguage(Context context, String sourceLanguage) {
-        setValue(context, "source-language", sourceLanguage);
+        storage.setStringValue(context, "source-language", sourceLanguage);
     }
 
     public String dictionaryLanguage(Context context) {
-        return value(context, "dictionary-language", "EN");
+        return storage.stringValue(context, "dictionary-language", "EN");
     }
 
     public void setDictionaryLanguage(Context context, String dictionaryLanguage) {
-        setValue(context, "dictionary-language", dictionaryLanguage);
+        storage.setStringValue(context, "dictionary-language", dictionaryLanguage);
     }
 
     public String dictionaryURL(Context context) {
         String dictLang = dictionaryLanguage(context);
         String srcLang = sourceLanguage(context);
+        if (srcLang.equals("Français")) {
+            return "http://www.wordreference.com/fren/";
+        }
+        else if (srcLang.equals("Italiano")) {
+            return "http://wordreference.com/iten/";
+        }
+        else if (srcLang.equals("Português")) {
+            return "http://wordreference.com/pten/";
+        }
         return "http://www.wordreference.com/" + srcLang.toLowerCase() + dictLang.toLowerCase() + "/";
     }
 
@@ -51,14 +68,14 @@ public class Settings {
 
     public final Map<String, String[]> languageMap = new HashMap<String, String[]>() {{
         put("ES", new String[] {"EN", "FR", "PT", "IT", "DE", "ES"});
-        put("FR", new String[] {"EN", "ES"});
-        put("IT", new String[] {"EN", "ES"});
+        put("Français", new String[] {"EN", "ES"});
+        put("Italiano", new String[] {"EN", "ES"});
         put("CA", new String[] {"CA"});
         put("DE", new String[] {"EN", "ES"});
         put("NL", new String[] {"EN"});
         put("SV", new String[] {"EN"});
         put("RU", new String[] {"EN"});
-        put("PT", new String[] {"EN", "ES"});
+        put("Português", new String[] {"EN", "ES"});
         put("PL", new String[] {"EN"});
         put("RO", new String[] {"EN"});
         put("CZ", new String[] {"EN"});
@@ -68,7 +85,7 @@ public class Settings {
         put("JA", new String[] {"EN"});
         put("KO", new String[] {"EN"});
         put("AR", new String[] {"EN"});
-        put("EN", new String[] {"EN", "AR", "KO", "JA", "ZH", "TR", "GR", "CZ", "RO", "PL", "PT", "RU", "SV", "NL", "DE", "CA", "IT", "FR", "ES"});
+        put("English", new String[] {"EN", "AR", "KO", "JA", "ZH", "TR", "GR", "CZ", "RO", "PL", "PT", "RU", "SV", "NL", "DE", "CA", "IT", "FR", "ES"});
     }};
 
     public String[] sourceLanguages() {
@@ -76,22 +93,47 @@ public class Settings {
     }
 
     public void setExpandedSections(Context context, String expandedSections) {
-        setValue(context, "expanded-sections", expandedSections);
+        storage.setStringValue(context, "expanded-sections", expandedSections);
     }
 
     public String getExpandedSections(Context context) {
-        return value(context, "expanded-sections", "[]");
+        return storage.stringValue(context, "expanded-sections", "[]");
     }
 
-    private String value(Context context, String key, String defaultValue) {
-        SharedPreferences prefs = context.getSharedPreferences("wikireader-preferences", context.MODE_PRIVATE);
-        String val = prefs.getString(key, defaultValue);
-        return val;
+    public List<Site> defaultSites() {
+        List<Site> defs = new ArrayList<Site>();
+        defs.add(new Site("Italiano", "Wikipedia", "https://www.wikipedia.it"));
+        defs.add(new Site("Italiano", "Ascoltando le cicale", "https://valerianeglia.wordpress.com/"));
+        defs.add(new Site("Français", "Wikipedia", "https://fr.wikipedia.org"));
+        defs.add(new Site("Français", "En écoutant les cigales", "https://valerianeglia.wordpress.com/en-ecoutant-les-cigales/"));
+        defs.add(new Site("Português", "Wikipedia","https://pt.wikipedia.org"));
+        defs.add(new Site("English", "Wikipedia","https://wikipedia.org"));
+        defs.add(new Site("עברית", "וויקיפידיה", "https://wikipedia.co.il"));
+        return defs;
     }
 
-    private void setValue(Context context, String key, String value) {
-        SharedPreferences.Editor editor = context.getSharedPreferences("wikireader-preferences", context.MODE_PRIVATE).edit();
-        editor.putString(key, value);
-        editor.apply();
+    public List<Site> getSites(Context context) {
+        List<String> serialized = storage.arrayValue(context, "sites", null);
+        if ((serialized == null) || serialized.isEmpty()) {
+            return defaultSites();
+        }
+        List<Site> sites = new ArrayList<>();
+        for (String serial : serialized) {
+            sites.add(Site.parse(serial));
+        }
+        return sites;
     }
+
+    public SortedMap<String, List<Site>> getLanguageSiteMap(Context context) {
+        List<Site> sites = getSites(context);
+        SortedMap<String, List<Site>> map = new TreeMap();
+        for (Site site : sites) {
+            if (map.get(site.language) == null) {
+                map.put(site.language, new ArrayList<Site>());
+            }
+            map.get(site.language).add(site);
+        }
+        return map;
+    }
+
 }

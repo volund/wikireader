@@ -54,8 +54,9 @@ public class JavascriptBridge {
 
             @Override
             public void run() {
-
-                LookupDialog lookupDialog = new LookupDialog(act, Settings.shared.dictionaryURL(mContext) + lookupWord, onDismiss);
+                String dicturl = Settings.shared.dictionaryURL(mContext);
+                Log.e("WIKIREADER", "DBG dict url is[" + dicturl + "]");
+                LookupDialog lookupDialog = new LookupDialog(act, dicturl + lookupWord, onDismiss);
                 lookupDialog.show();
             }
         });

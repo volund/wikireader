@@ -1,6 +1,7 @@
 package com.putskul_productions.wikireader;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -44,23 +45,13 @@ public class BrowserActivity extends AppCompatActivity {
         mLeftMenuView = findViewById(R.id.navigation_view);
         mDrawerLayout = findViewById(R.id.drawerLayout);
 
-
+        final Context context = this;
         mLeftMenuView.setmListener(new OnClickMenu() {
             @Override
-            public void onClick(String id) {
-                Log.d("MENU", "ic_menu_hamburger clicked: " + id);
-
+            public void onClick(Site site) {
+                Settings.shared.setSourceLanguage(context, site.language);
+                mWebView.loadUrl(site.address);
                 closeDrawer(null);
-/*
-                if (id.equals(getString(R.string.settings_id))) {
-                    Intent intent = new Intent(BrowserActivity.this,
-                            SettingsActivity.class);
-                    MainActivity.this.startActivity(intent);
-                } else if (id.equals(getString(R.string.exit_id))) {
-                    // salir
-                    showRateDialogBeforeExit();
-                }*/
-
             }
         });
 
@@ -68,7 +59,6 @@ public class BrowserActivity extends AppCompatActivity {
 
         WebSettings webViewSettings = mWebView.getSettings();
         webViewSettings.setJavaScriptEnabled(true);
-        Log.e("WIKIREADER", "DEFAULT font size " + webViewSettings.getDefaultFontSize());
         webViewSettings.setDefaultFontSize(21);
         mWebView.addJavascriptInterface(new JavascriptBridge(this), "javascriptBridge");
 
@@ -80,7 +70,6 @@ public class BrowserActivity extends AppCompatActivity {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String urlNewString) {
                 webViewPreviousState = PAGE_REDIRECTED;
-                Log.e("WIKIREADER", "DBG should load |" + urlNewString + "|");
                 mWebView.loadUrl(urlNewString);
                 return true;
             }
@@ -89,7 +78,6 @@ public class BrowserActivity extends AppCompatActivity {
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 super.onPageStarted(view, url, favicon);
                 webViewPreviousState = PAGE_STARTED;
-                Log.e("WIKIREADER", "DBG started loading!");
             }
 
             @Override
@@ -165,9 +153,6 @@ public class BrowserActivity extends AppCompatActivity {
 
 
                     mWebView.evaluateJavascript(lookupFunction + clickEvent + dblclickEvent + expandSections, null);
-
-                    Log.e("WIKIREADER", "DBG finished loading!");
-
                     Settings.shared.setLastVisitedURL(finalThis, url);
                 }
 
@@ -226,7 +211,6 @@ public class BrowserActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        Log.e("WIKIREADER", "CLICKED!!!\n\n\n");
         final BrowserActivity finalThis = this;
         if (id == android.R.id.home) {
             openDrawer();
@@ -249,36 +233,7 @@ public class BrowserActivity extends AppCompatActivity {
             Intent intent = new Intent(this, SettingsActivity.class);
             startActivity(intent);
 
-
-            /*
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            final String[] sourceLangs = Settings.shared.sourceLanguages();
-            builder.setItems(sourceLangs, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    final String sourceLang = sourceLangs[which];
-                    final String[] dictLangs = Settings.shared.languageMap.get(sourceLang);
-
-
-                    AlertDialog.Builder builder = new AlertDialog.Builder(finalThis);
-                    builder.setItems(dictLangs, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            String dictLang = dictLangs[which];
-                            Settings.shared.setSourceLanguage(finalThis, sourceLang);
-                            Settings.shared.setDictionaryLanguage(finalThis, dictLang);
-                            mWebView.clearHistory();
-                            mWebView.loadUrl(Settings.shared.lastVisitedURL(finalThis));
-                        }
-                    });
-                    builder.show();
-                }
-            });
-            builder.show();*/
-        }/*
-        else if (id == R.id.action_drawer) {
-            openDrawer();
-        }*/
+        }
         return super.onOptionsItemSelected(item);
     }
 
