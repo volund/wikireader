@@ -11,6 +11,14 @@ public class Site {
         address = pAddress.trim();
     }
 
+    public boolean equals(Object obj) {
+        if (obj instanceof Site == false) {
+            return false;
+        }
+        Site site = (Site)obj;
+        return language.equals(site.language) && label.equals(site.label) && address.equals(site.address);
+    }
+
     String serialize() {
         return language + "|" + label + "|" + address;
     }

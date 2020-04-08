@@ -72,8 +72,6 @@ public class MenuItemsAdapter extends BaseAdapter {
             LayoutInflater inflater = ((Activity) mContext).getLayoutInflater();
             convertView = inflater.inflate(R.layout.layout_left_menu_item, parent, false);
             holder = new MenuItemHolder(convertView);
-
-
             convertView.setTag(holder);
 
         }else {

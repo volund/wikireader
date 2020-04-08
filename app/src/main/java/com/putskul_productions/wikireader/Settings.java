@@ -112,6 +112,14 @@ public class Settings {
         return defs;
     }
 
+    public void setSites(Context context, List<Site> sites) {
+        List<String> serialized = new ArrayList();
+        for (Site site : sites) {
+            serialized.add(site.serialize());
+        }
+        storage.setArrayValue(context, "sites", serialized);
+    }
+
     public List<Site> getSites(Context context) {
         List<String> serialized = storage.arrayValue(context, "sites", null);
         if ((serialized == null) || serialized.isEmpty()) {
