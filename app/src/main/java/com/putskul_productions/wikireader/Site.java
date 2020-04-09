@@ -1,6 +1,8 @@
 package com.putskul_productions.wikireader;
 
-public class Site {
+import android.support.annotation.NonNull;
+
+public class Site implements Comparable {
     public String language;
     public String label;
     public String address;
@@ -29,5 +31,14 @@ public class Site {
             return null;
         }
         return new Site(components[0], components[1], components[2]);
+    }
+
+    @Override
+    public int compareTo(@NonNull Object obj) {
+        if (obj instanceof Site == false) {
+            return -1;
+        }
+        Site site = (Site)obj;
+        return site.label.compareTo(label);
     }
 }

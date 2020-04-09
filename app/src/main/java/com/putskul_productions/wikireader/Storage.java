@@ -53,6 +53,9 @@ public class Storage {
     public List<Language> getLanguages(Context context) {
         List<Language> languages = backend.getListValue(context, "languages", new TypeToken<ArrayList<Language>>(){});
         Collections.sort(languages);
+        for (Language lang : languages) {
+            Collections.sort(lang.sites);
+        }
         return languages;
     }
 }
