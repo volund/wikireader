@@ -102,10 +102,13 @@ public class Settings {
 
     public List<Site> defaultSites() {
         List<Site> defs = new ArrayList<Site>();
-        defs.add(new Site("Italiano", "Wikipedia", "https://www.wikipedia.it"));
         defs.add(new Site("Italiano", "Ascoltando le cicale", "https://valerianeglia.wordpress.com/"));
-        defs.add(new Site("Français", "Wikipedia", "https://fr.wikipedia.org"));
+        defs.add(new Site("Italiano", "Notizie", "https://news.google.it"));
+        defs.add(new Site("Italiano", "Wikipedia", "https://www.wikipedia.it"));
         defs.add(new Site("Français", "En écoutant les cigales", "https://valerianeglia.wordpress.com/en-ecoutant-les-cigales/"));
+        defs.add(new Site("Français", "Infos", "https://news.google.fr"));
+        defs.add(new Site("Français", "Wikipedia", "https://fr.wikipedia.org"));
+        defs.add(new Site("Português", "Notícias","https://pt.wikipedia.org"));
         defs.add(new Site("Português", "Wikipedia","https://pt.wikipedia.org"));
         defs.add(new Site("English", "Wikipedia","https://wikipedia.org"));
         defs.add(new Site("עברית", "וויקיפידיה", "https://wikipedia.co.il"));

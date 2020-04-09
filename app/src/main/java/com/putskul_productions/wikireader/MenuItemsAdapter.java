@@ -91,12 +91,12 @@ public class MenuItemsAdapter extends BaseAdapter {
         if (obj instanceof String) {
             holder.clickable = false;
             holder.mTitle.setTextColor(Color.LTGRAY);
-            holder.mTitle.setTextSize(20);
+            holder.mTitle.setTextSize(16);
             holder.mTitle.setPadding(35, 40, 30, 0);
         }
         else {
             holder.mTitle.setTextColor(Color.WHITE);
-            holder.mTitle.setTextSize(25);
+            holder.mTitle.setTextSize(22);
             holder.mTitle.setPadding(60, 20, 50, 0);
             holder.site = (Site)obj;
         }

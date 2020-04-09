@@ -8,6 +8,9 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.EditText;
 
 import java.util.List;
 
@@ -38,7 +41,40 @@ public class SitesActivity extends AppCompatActivity implements SitesAdapter.OnC
 
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // R.menu.mymenu is a reference to an xml file named mymenu.xml which should be inside your res/menu directory.
+        // If you don't have res/menu, just create a directory named "menu" inside res
+        getMenuInflater().inflate(R.menu.sites_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
 
+    // handle button activities
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.addButton) {
+            showAddSiteDialogs();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    void showAddSiteDialogs() {
+
+        final EditText input = new EditText(this);
+        showPromptDialog("Site language", input, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                final String language = input.getText().toString();
+                showPromptDialog("Site label", input, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        final String label = input.getText().toString();
+                    }
+                });
+            }
+        });
+    }
     @Override
     public void onClick(final Site site) {
         final Context context = this;
@@ -60,5 +96,13 @@ public class SitesActivity extends AppCompatActivity implements SitesAdapter.OnC
     void refreshData() {
         List<Site> sites = Settings.shared.getSites(this);
         mAdapter.updateData(sites);
+    }
+
+    void showPromptDialog(String title, EditText input, DialogInterface.OnClickListener okListener) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(title);
+        builder.setView(input);
+        builder.setPositiveButton("OK", okListener);
+        builder.show();
     }
 }
