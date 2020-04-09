@@ -61,7 +61,7 @@ public class SitesAdapter extends RecyclerView.Adapter<SitesAdapter.SitesViewHol
             holder.label.setText(language.label);
             holder.subLabel.setText("");
             holder.subLabel.setVisibility(View.GONE);
-            holder.editIcon.setVisibility(View.VISIBLE);
+            holder.editIcon.setVisibility(View.GONE);
             /*
             holder.editIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
