@@ -78,12 +78,11 @@ public class SimpleLeftMenuView extends NavigationView {
     }
 
     private void setData() {
-        SortedMap<String, List<Site>> languageSites = Settings.shared.getLanguageSiteMap(getContext());
-
+        List<Language> languages = Storage.shared.getLanguages(getContext());
         List<Object> sections = new ArrayList<>();
-        for (String language : languageSites.keySet()) {
+        for (Language language : languages) {
             sections.add(language);
-            sections.addAll(languageSites.get(language));
+            sections.addAll(language.sites);
         }
 
         mItemsAdapter = new MenuItemsAdapter(mContext, sections, new OnClickMenu() {

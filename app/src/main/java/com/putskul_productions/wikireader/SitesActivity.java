@@ -11,8 +11,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 
 import java.util.List;
+
 
 public class SitesActivity extends AppCompatActivity implements SitesAdapter.OnClickSiteListener {
     RecyclerView mRecyclerView;
@@ -35,8 +37,8 @@ public class SitesActivity extends AppCompatActivity implements SitesAdapter.OnC
         mRecyclerView.setLayoutManager(layoutManager);
 
         // specify an adapter (see also next example)
-        List<Site> sites = Settings.shared.getSites(this);
-        mAdapter = new SitesAdapter(sites, this);
+        List<Language> languages = Storage.shared.getLanguages(this);
+        mAdapter = new SitesAdapter(languages, this);
         mRecyclerView.setAdapter(mAdapter);
 
     }
@@ -54,48 +56,108 @@ public class SitesActivity extends AppCompatActivity implements SitesAdapter.OnC
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.addButton) {
-            showAddSiteDialogs();
+            if (mAdapter.currentLanguage == null) {
+                showAddLanguageDialog();
+            }
+            else {
+                showAddSiteDialogs();
+            }
         }
         return super.onOptionsItemSelected(item);
     }
 
-    void showAddSiteDialogs() {
-
+    void showAddLanguageDialog() {
+        final Context context = this;
         final EditText input = new EditText(this);
-        showPromptDialog("Site language", input, new DialogInterface.OnClickListener() {
+        showPromptDialog("New language", input, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                final String language = input.getText().toString();
-                showPromptDialog("Site label", input, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        final String label = input.getText().toString();
-                    }
-                });
+                final String label = input.getText().toString();
+                if (!label.trim().equals("")) {
+                    Language newLanguage = new Language(label);
+                    Storage.shared.addLanguage(context, newLanguage);
+                    refreshData();
+                }
             }
         });
     }
-    @Override
+
+    void showAddSiteDialogs() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("New site");
+
+        final Context context = this;
+
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        final EditText labelInput = new EditText(this);
+        final EditText addressInput = new EditText(this);
+        labelInput.setHint("Label");
+        addressInput.setHint("Address");
+        layout.addView(labelInput);
+        layout.addView(addressInput);
+
+        builder.setView(layout);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                String label = labelInput.getText().toString().trim();
+                String address = addressInput.getText().toString().trim();
+
+                if (!address.startsWith("http")) {
+                    address = "http://" + address;
+                }
+                if (!label.trim().equals("")) {
+                    Site newSite = new Site("", label, address);
+                    mAdapter.currentLanguage.sites.add(newSite);
+                    Storage.shared.updateLanguage(context, mAdapter.currentLanguage);
+                    refreshData();
+                }
+            }
+        });
+        builder.show();
+
+    }
+
     public void onClick(final Site site) {
         final Context context = this;
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Really delete?");
         builder.setIcon(android.R.drawable.ic_dialog_alert);
+        /*
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-                List<Site> sites = Settings.shared.getSites(context);
-                sites.remove(site);
-                Settings.shared.setSites(context, sites);
+                Storage.shared.removeSite(context, site);
                 refreshData();
             }
-        });
+        });*/
         builder.setNegativeButton("Cancel", null);
         builder.show();
     }
 
+
+    public void OnEdit(final Language language, final Site site) {
+
+
+        /*
+        final Context context = this;
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Really delete?");
+        builder.setIcon(android.R.drawable.ic_dialog_alert);
+
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                Storage.shared.removeSite(context, site);
+                refreshData();
+            }
+        });
+        builder.setNegativeButton("Cancel", null);
+        builder.show();*/
+    }
+
     void refreshData() {
-        List<Site> sites = Settings.shared.getSites(this);
-        mAdapter.updateData(sites);
+        List<Language> languages = Storage.shared.getLanguages(this);
+        mAdapter.updateData(languages);
     }
 
     void showPromptDialog(String title, EditText input, DialogInterface.OnClickListener okListener) {
@@ -104,5 +166,36 @@ public class SitesActivity extends AppCompatActivity implements SitesAdapter.OnC
         builder.setView(input);
         builder.setPositiveButton("OK", okListener);
         builder.show();
+    }
+
+    @Override
+    public void onDelete(final Language lang, final Site site) {
+        final boolean deleteLanguage = site == null;
+        String msg = deleteLanguage ? "Really delete '" + lang.label + "'? All sites for this language will be lost" : "Really delete '" + site.label + "'";
+
+        final Context context = this;
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(msg);
+//        builder.setMessage(msg);
+        builder.setIcon(android.R.drawable.ic_dialog_alert);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                if (deleteLanguage) {
+                    Storage.shared.removeLanguage(context, lang);
+                }
+                else {
+                    lang.sites.remove(site);
+                    Storage.shared.updateLanguage(context, lang);
+                }
+                refreshData();
+            }
+        });
+        builder.setNegativeButton("Cancel", null);
+        builder.show();
+    }
+
+    @Override
+    public void onEdit(Language lang, Site site) {
+
     }
 }

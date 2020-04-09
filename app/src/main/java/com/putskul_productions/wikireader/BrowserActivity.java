@@ -33,6 +33,12 @@ public class BrowserActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (Storage.shared.isFreshInstall(this)) {
+            Storage.shared.setLanguages(this, Settings.shared.defaultLanguages());
+            Storage.shared.setIsFreshInstall(this, false);
+        }
+
         setContentView(R.layout.activity_browser);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

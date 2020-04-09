@@ -46,10 +46,9 @@ public class MenuItemsAdapter extends BaseAdapter {
     @Override
     public String getItem(int position) {
         Object obj = mSections.get(position);
-        if (obj instanceof String) {
-            return (String)obj;
+        if (obj instanceof Language) {
+            return ((Language) obj).label;
         }
-        Site site = (Site)obj;
         return ((Site) obj).label;
     }
 
@@ -88,7 +87,7 @@ public class MenuItemsAdapter extends BaseAdapter {
         holder.position = position;
         holder.mTitle.setText(getItem(position));
 
-        if (obj instanceof String) {
+        if (obj instanceof Language) {
             holder.clickable = false;
             holder.mTitle.setTextColor(Color.LTGRAY);
             holder.mTitle.setTextSize(16);

@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 
+
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
     <TextView
         android:id="@+id/siteLabelTextView"
         android:layout_width="wrap_content"
@@ -12,7 +18,25 @@
         android:paddingLeft="30px"
         android:paddingTop="50px"
         android:paddingBottom="5px"
+        android:layout_weight="1"
         android:textSize="15pt"/>
+
+        <ImageView
+            android:id="@+id/editIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_edit_24dp"
+            android:layout_marginTop="50px"
+            android:layout_marginRight="20px"/>
+
+        <ImageView
+            android:id="@+id/deleteIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_delete_24dp"
+            android:layout_marginTop="50px"
+            android:layout_marginRight="20px"/>
+</LinearLayout>
     <TextView
         android:id="@+id/siteSubLabelTextView"
         android:layout_width="wrap_content"
@@ -27,3 +51,4 @@
         android:layout_height="2dp"
         android:background="#c0c0c0"/>
 </LinearLayout>
+

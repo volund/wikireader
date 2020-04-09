@@ -1,21 +1,17 @@
 package com.putskul_productions.wikireader;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
 public class Settings {
     static final Settings shared = new Settings();
-    private PersistentStorage storage = new PersistentStorage();
+    private StorageBackend storage = new StorageBackend();
 
     public String lastVisitedURL(Context context) {
         String lastURL = storage.stringValue(context, "last-visited-url-" + sourceLanguage(context), null);
@@ -115,36 +111,33 @@ public class Settings {
         return defs;
     }
 
-    public void setSites(Context context, List<Site> sites) {
-        List<String> serialized = new ArrayList();
-        for (Site site : sites) {
-            serialized.add(site.serialize());
-        }
-        storage.setArrayValue(context, "sites", serialized);
+    public List<Language> defaultLanguages() {
+        Language french = new Language("Français");
+        Language italian = new Language("Italiano");
+        Language portuguese = new Language("Português");
+        Language english = new Language("English");
+        Language hebrew = new Language("עברית");
+
+        italian.sites.add(new Site("", "Ascoltando le cicale", "https://valerianeglia.wordpress.com/"));
+        italian.sites.add(new Site("", "Notizie", "https://news.google.it"));
+        italian.sites.add(new Site("", "Wikipedia", "https://www.wikipedia.it"));
+        french.sites.add(new Site("", "En écoutant les cigales", "https://valerianeglia.wordpress.com/en-ecoutant-les-cigales/"));
+        french.sites.add(new Site("", "Infos", "https://news.google.fr"));
+        french.sites.add(new Site("", "Wikipedia", "https://fr.wikipedia.org"));
+        portuguese.sites.add(new Site("", "Notícias","https://news.google.com.br"));
+        portuguese.sites.add(new Site("", "Wikipedia","https://pt.wikipedia.org"));
+        english.sites.add(new Site("", "Wikipedia","https://wikipedia.org"));
+        hebrew.sites.add(new Site("", "וויקיפידיה", "https://wikipedia.co.il"));
+
+        List<Language> languages = new ArrayList<>();
+        languages.add(english);
+        languages.add(french);
+        languages.add(italian);
+        languages.add(portuguese);
+        languages.add(hebrew);
+
+        return languages;
     }
 
-    public List<Site> getSites(Context context) {
-        List<String> serialized = storage.arrayValue(context, "sites", null);
-        if ((serialized == null) || serialized.isEmpty()) {
-            return defaultSites();
-        }
-        List<Site> sites = new ArrayList<>();
-        for (String serial : serialized) {
-            sites.add(Site.parse(serial));
-        }
-        return sites;
-    }
-
-    public SortedMap<String, List<Site>> getLanguageSiteMap(Context context) {
-        List<Site> sites = getSites(context);
-        SortedMap<String, List<Site>> map = new TreeMap();
-        for (Site site : sites) {
-            if (map.get(site.language) == null) {
-                map.put(site.language, new ArrayList<Site>());
-            }
-            map.get(site.language).add(site);
-        }
-        return map;
-    }
 
 }
