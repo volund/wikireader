@@ -26,6 +26,7 @@ public class SitesActivity extends AppCompatActivity implements SitesAdapter.OnC
         setTitle("Sites");
         setContentView(R.layout.activity_sites);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mRecyclerView = (RecyclerView) findViewById(R.id.sitesRecyclerView);
 
         // use this setting to improve performance if you know that changes
@@ -62,6 +63,9 @@ public class SitesActivity extends AppCompatActivity implements SitesAdapter.OnC
             else {
                 showAddSiteDialogs();
             }
+        }
+        else {
+            onBackPressed();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -115,6 +119,7 @@ public class SitesActivity extends AppCompatActivity implements SitesAdapter.OnC
                 }
             }
         });
+        builder.setNegativeButton("Cancel", null);
         builder.show();
 
     }
@@ -197,5 +202,17 @@ public class SitesActivity extends AppCompatActivity implements SitesAdapter.OnC
     @Override
     public void onEdit(Language lang, Site site) {
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mAdapter.currentLanguage != null) {
+            mAdapter.currentLanguage = null;
+            refreshData();
+        }
+        else {
+            finish();
+        }
+        Log.e("WIKIREADER", "onBackPressed Called");
     }
 }

@@ -62,13 +62,29 @@ public class SitesAdapter extends RecyclerView.Adapter<SitesAdapter.SitesViewHol
             holder.subLabel.setText("");
             holder.subLabel.setVisibility(View.GONE);
             holder.editIcon.setVisibility(View.VISIBLE);
+            /*
             holder.editIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     currentLanguage = language;
                     notifyDataSetChanged();
                 }
+            });*/
+
+
+            holder.layout.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    switch (motionEvent.getActionMasked()) {
+                        case MotionEvent.ACTION_UP:
+                            currentLanguage = language;
+                            notifyDataSetChanged();
+                        default:
+                    }
+                    return true;
+                }
             });
+
             holder.deleteIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
