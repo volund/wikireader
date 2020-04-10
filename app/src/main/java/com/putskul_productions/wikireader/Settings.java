@@ -70,19 +70,18 @@ public class Settings {
         french.sites.add(new Site("Wikipedia", "https://fr.wikipedia.org"));
         portuguese.sites.add(new Site("Notícias","https://news.google.com.br"));
         portuguese.sites.add(new Site("Wikipedia","https://pt.wikipedia.org"));
-        english.sites.add(new Site("Wikipedia","https://wikipedia.org"));
+        english.sites.add(new Site("Wikipedia","https://en.wikipedia.org"));
         hebrew.sites.add(new Site("וויקיפידיה", "https://wikipedia.co.il"));
-
 
         italian.dictionaries.addAll(wordpress.dictionariesForLocale("IT"));
         french.dictionaries.addAll(wordpress.dictionariesForLocale("FR"));
         portuguese.dictionaries.addAll(wordpress.dictionariesForLocale("PT"));
 
+        english.dictionaries.add(new Dictionary("אנגלית - עברית (מורפיקס)", "עברית", "https://www.morfix.co.il/en/%s"));
         english.dictionaries.addAll(wordpress.dictionariesForLocale("EN"));
-        english.dictionaries.add(new Dictionary("Morfix (EN-HE)", "עברית", "https://www.morfix.co.il/en/%s"));
 
-        hebrew.dictionaries.add(new Dictionary("Milog (HE-HE)", "עברית", "https://milog.co.il/%s"));
-        hebrew.dictionaries.add(new Dictionary("Morfix (HE-EN)", "English", "https://www.morfix.co.il/en/%s"));
+        hebrew.dictionaries.add(new Dictionary("עברית - עברית (מילוג)", "עברית", "https://milog.co.il/%s"));
+        hebrew.dictionaries.add(new Dictionary("Hebrew - English (Morfix)", "English", "https://www.morfix.co.il/en/%s"));
 
         List<Language> languages = new ArrayList<>();
         languages.add(english);
