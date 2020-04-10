@@ -65,6 +65,7 @@ public class SitesAdapter extends RecyclerView.Adapter<SitesAdapter.SitesViewHol
             holder.label.setText(language.label);
             holder.subLabel.setText(language.currentDictionary.name);
             holder.editIcon.setVisibility(View.GONE);
+            holder.deleteIcon.setVisibility(View.GONE);
             holder.enabledCheckbox.setVisibility(View.VISIBLE);
             holder.enabledCheckbox.setChecked(language.enabled);
 
@@ -99,8 +100,9 @@ public class SitesAdapter extends RecyclerView.Adapter<SitesAdapter.SitesViewHol
             final Site site = currentLanguage.sites.get(position);
             holder.label.setText(site.label);
             holder.subLabel.setText(site.address);
-            holder.subLabel.setVisibility(View.VISIBLE);
             holder.editIcon.setVisibility(View.GONE);
+            holder.deleteIcon.setVisibility(View.VISIBLE);
+
             holder.enabledCheckbox.setVisibility(View.GONE);
 
             holder.deleteIcon.setOnClickListener(new View.OnClickListener() {

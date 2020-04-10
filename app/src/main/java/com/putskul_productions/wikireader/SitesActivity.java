@@ -23,7 +23,7 @@ public class SitesActivity extends AppCompatActivity implements SitesAdapter.OnC
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setTitle("Sites");
+        setTitle("Content");
         setContentView(R.layout.activity_sites);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -41,6 +41,13 @@ public class SitesActivity extends AppCompatActivity implements SitesAdapter.OnC
         List<Language> languages = Storage.shared.getLanguages(this);
         mAdapter = new SitesAdapter(languages, this);
         mRecyclerView.setAdapter(mAdapter);
+
+        if (Storage.shared.enabledLanguages(this).size() == 0) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("Welcome to Wikireader!\n\nTap the checkbox on the left for each language you wish to read, then select the dictionary for use with that language");
+            builder.setPositiveButton("Ok", null);
+            builder.show();
+        }
 
     }
 

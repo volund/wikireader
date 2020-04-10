@@ -58,4 +58,15 @@ public class Storage {
         }
         return languages;
     }
+
+    public List<Language> enabledLanguages(Context context) {
+        List<Language> languages = getLanguages(context);
+        List<Language> enabled = new ArrayList<>();
+        for (Language language : languages) {
+            if (language.enabled) {
+                enabled.add(language);
+            }
+        }
+        return enabled;
+    }
 }
