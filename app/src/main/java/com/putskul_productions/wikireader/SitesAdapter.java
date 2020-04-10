@@ -7,6 +7,8 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -19,6 +21,7 @@ public class SitesAdapter extends RecyclerView.Adapter<SitesAdapter.SitesViewHol
     private OnClickSiteListener mOnClickSiteListener;
 
     public static class SitesViewHolder extends RecyclerView.ViewHolder {
+        public CheckBox enabledCheckbox;
         public LinearLayout layout;
         public TextView label;
         public TextView subLabel;
@@ -27,6 +30,7 @@ public class SitesAdapter extends RecyclerView.Adapter<SitesAdapter.SitesViewHol
         public SitesViewHolder(LinearLayout v) {
             super(v);
             layout = v;
+            enabledCheckbox = itemView.findViewById(R.id.languageEnabled);
             label = (TextView)layout.findViewById(R.id.siteLabelTextView);
             subLabel = (TextView)layout.findViewById(R.id.siteSubLabelTextView);
             deleteIcon = itemView.findViewById(R.id.deleteIcon);
@@ -62,6 +66,8 @@ public class SitesAdapter extends RecyclerView.Adapter<SitesAdapter.SitesViewHol
             holder.subLabel.setText("");
             holder.subLabel.setVisibility(View.GONE);
             holder.editIcon.setVisibility(View.GONE);
+            holder.enabledCheckbox.setVisibility(View.VISIBLE);
+            holder.enabledCheckbox.setChecked(language.enabled);
             /*
             holder.editIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -71,6 +77,14 @@ public class SitesAdapter extends RecyclerView.Adapter<SitesAdapter.SitesViewHol
                 }
             });*/
 
+
+
+            holder.enabledCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                    mOnClickSiteListener.onToggleLanguageEnabled(language);
+                }
+            });
 
             holder.layout.setOnTouchListener(new View.OnTouchListener() {
                 @Override
@@ -98,6 +112,7 @@ public class SitesAdapter extends RecyclerView.Adapter<SitesAdapter.SitesViewHol
             holder.subLabel.setText(site.address);
             holder.subLabel.setVisibility(View.VISIBLE);
             holder.editIcon.setVisibility(View.GONE);
+            holder.enabledCheckbox.setVisibility(View.GONE);
 
             holder.deleteIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -132,5 +147,6 @@ public class SitesAdapter extends RecyclerView.Adapter<SitesAdapter.SitesViewHol
     public interface OnClickSiteListener {
         void onDelete(Language lang, Site site);
         void onEdit(Language lang, Site site);
+        void onToggleLanguageEnabled(Language lang);
     }
 }

@@ -112,7 +112,7 @@ public class SitesActivity extends AppCompatActivity implements SitesAdapter.OnC
                     address = "http://" + address;
                 }
                 if (!label.trim().equals("")) {
-                    Site newSite = new Site("", label, address);
+                    Site newSite = new Site(label, address);
                     mAdapter.currentLanguage.sites.add(newSite);
                     Storage.shared.updateLanguage(context, mAdapter.currentLanguage);
                     refreshData();
@@ -160,11 +160,40 @@ public class SitesActivity extends AppCompatActivity implements SitesAdapter.OnC
         builder.show();*/
     }
 
+    public void onToggleLanguageEnabled(Language language) {
+        language.enabled = !language.enabled;
+        Storage.shared.updateLanguage(this, language);
+        if (language.enabled) {
+            showDictionarySelectionDialog(language);
+        }
+
+        refreshData();
+    }
+
     void refreshData() {
         List<Language> languages = Storage.shared.getLanguages(this);
         mAdapter.updateData(languages);
     }
 
+    void showDictionarySelectionDialog(final Language language) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Select dictionary (" + language.label + ")");
+        final Context context = this;
+        String[] dictionaries = new String[language.dictionaries.size()];
+        int i = 0;
+        for (Dictionary dict : language.dictionaries) {
+            dictionaries[i] = dict.name;
+            i += 1;
+        }
+        builder.setItems(dictionaries, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                language.currentDictionary = language.dictionaries.get(i);
+                Storage.shared.updateLanguage(context, language);
+            }
+        });
+        builder.show();
+    }
     void showPromptDialog(String title, EditText input, DialogInterface.OnClickListener okListener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(title);

@@ -4,23 +4,20 @@ import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class Language implements Comparable {
+    public boolean enabled;
     public String label;
     public List<Site> sites;
+    public List<Dictionary> dictionaries;
+    public Dictionary currentDictionary;
 
     public Language(String pLabel) {
+        enabled = false;
         label = pLabel;
         sites = new ArrayList<Site>();
-    }
-
-    public String serialize() {
-        return label;
-    }
-
-    public static Language parse(String str) {
-        return new Language(str);
+        dictionaries = new ArrayList<>();
+        currentDictionary = Dictionary.BlankDictionary;
     }
 
     public boolean equals(Object obj) {

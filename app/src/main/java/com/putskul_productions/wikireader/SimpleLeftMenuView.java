@@ -81,8 +81,10 @@ public class SimpleLeftMenuView extends NavigationView {
         List<Language> languages = Storage.shared.getLanguages(getContext());
         List<Object> sections = new ArrayList<>();
         for (Language language : languages) {
-            sections.add(language);
-            sections.addAll(language.sites);
+            if (language.enabled) {
+                sections.add(language);
+                sections.addAll(language.sites);
+            }
         }
 
         mItemsAdapter = new MenuItemsAdapter(mContext, sections, new OnClickMenu() {

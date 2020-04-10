@@ -24,6 +24,8 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import java.util.Locale;
+
 
 public class BrowserActivity extends AppCompatActivity {
     protected SimpleLeftMenuView mLeftMenuView;
@@ -55,7 +57,7 @@ public class BrowserActivity extends AppCompatActivity {
         mLeftMenuView.setmListener(new OnClickMenu() {
             @Override
             public void onClick(Site site) {
-                Settings.shared.setSourceLanguage(context, site.language);
+                Settings.shared.setSourceLanguage(context, "en");
                 mWebView.loadUrl(site.address);
                 closeDrawer(null);
             }
