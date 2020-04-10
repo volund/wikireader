@@ -2,7 +2,6 @@ package com.putskul_productions.wikireader;
 
 import android.annotation.SuppressLint;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -15,7 +14,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
-public class SitesAdapter extends RecyclerView.Adapter<SitesAdapter.SitesViewHolder> {
+public class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.SitesViewHolder> {
     private List<Language> languages;
     public Language currentLanguage;
     private OnClickSiteListener mOnClickSiteListener;
@@ -38,7 +37,7 @@ public class SitesAdapter extends RecyclerView.Adapter<SitesAdapter.SitesViewHol
         }
     }
 
-    public SitesAdapter(List<Language> myDataset, OnClickSiteListener pListener) {
+    public ContentAdapter(List<Language> myDataset, OnClickSiteListener pListener) {
         languages = myDataset;
         mOnClickSiteListener = pListener;
     }
@@ -81,6 +80,7 @@ public class SitesAdapter extends RecyclerView.Adapter<SitesAdapter.SitesViewHol
                 public boolean onTouch(View view, MotionEvent motionEvent) {
                     switch (motionEvent.getActionMasked()) {
                         case MotionEvent.ACTION_UP:
+                            mOnClickSiteListener.onSelectionChanged(language);
                             currentLanguage = language;
                             notifyDataSetChanged();
                         default:
@@ -137,7 +137,7 @@ public class SitesAdapter extends RecyclerView.Adapter<SitesAdapter.SitesViewHol
 
     public interface OnClickSiteListener {
         void onDelete(Language lang, Site site);
-        void onEdit(Language lang, Site site);
+        void onSelectionChanged(Language lang);
         void onToggleLanguageEnabled(Language lang);
     }
 }

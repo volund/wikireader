@@ -16,9 +16,10 @@ import android.widget.LinearLayout;
 import java.util.List;
 
 
-public class SitesActivity extends AppCompatActivity implements SitesAdapter.OnClickSiteListener {
+public class ContentActivity extends AppCompatActivity implements ContentAdapter.OnClickSiteListener {
     RecyclerView mRecyclerView;
-    SitesAdapter mAdapter;
+    ContentAdapter mAdapter;
+    MenuItem addItemButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +40,7 @@ public class SitesActivity extends AppCompatActivity implements SitesAdapter.OnC
 
         // specify an adapter (see also next example)
         List<Language> languages = Storage.shared.getLanguages(this);
-        mAdapter = new SitesAdapter(languages, this);
+        mAdapter = new ContentAdapter(languages, this);
         mRecyclerView.setAdapter(mAdapter);
 
         if (Storage.shared.enabledLanguages(this).size() == 0) {
@@ -56,6 +57,8 @@ public class SitesActivity extends AppCompatActivity implements SitesAdapter.OnC
         // R.menu.mymenu is a reference to an xml file named mymenu.xml which should be inside your res/menu directory.
         // If you don't have res/menu, just create a directory named "menu" inside res
         getMenuInflater().inflate(R.menu.sites_menu, menu);
+        addItemButton = menu.findItem(R.id.addButton);
+        addItemButton.setVisible(false);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -136,35 +139,8 @@ public class SitesActivity extends AppCompatActivity implements SitesAdapter.OnC
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Really delete?");
         builder.setIcon(android.R.drawable.ic_dialog_alert);
-        /*
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                Storage.shared.removeSite(context, site);
-                refreshData();
-            }
-        });*/
         builder.setNegativeButton("Cancel", null);
         builder.show();
-    }
-
-
-    public void OnEdit(final Language language, final Site site) {
-
-
-        /*
-        final Context context = this;
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Really delete?");
-        builder.setIcon(android.R.drawable.ic_dialog_alert);
-
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                Storage.shared.removeSite(context, site);
-                refreshData();
-            }
-        });
-        builder.setNegativeButton("Cancel", null);
-        builder.show();*/
     }
 
     public void onToggleLanguageEnabled(Language language) {
@@ -173,7 +149,6 @@ public class SitesActivity extends AppCompatActivity implements SitesAdapter.OnC
         if (language.enabled) {
             showDictionarySelectionDialog(language);
         }
-
         refreshData();
     }
 
@@ -237,14 +212,23 @@ public class SitesActivity extends AppCompatActivity implements SitesAdapter.OnC
     }
 
     @Override
-    public void onEdit(Language lang, Site site) {
-
+    public void onSelectionChanged(Language language) {
+        if (language != null) {
+            setTitle(language.label);
+            addItemButton.setVisible(true);
+        }
+        else {
+            setTitle("Content");
+            addItemButton.setVisible(false);
+        }
     }
+
 
     @Override
     public void onBackPressed() {
         if (mAdapter.currentLanguage != null) {
             mAdapter.currentLanguage = null;
+            onSelectionChanged(null);
             refreshData();
         }
         else {
