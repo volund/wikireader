@@ -63,21 +63,10 @@ public class SitesAdapter extends RecyclerView.Adapter<SitesAdapter.SitesViewHol
         if (currentLanguage == null) {
             final Language language = languages.get(position);
             holder.label.setText(language.label);
-            holder.subLabel.setText("");
-            holder.subLabel.setVisibility(View.GONE);
+            holder.subLabel.setText(language.currentDictionary.name);
             holder.editIcon.setVisibility(View.GONE);
             holder.enabledCheckbox.setVisibility(View.VISIBLE);
             holder.enabledCheckbox.setChecked(language.enabled);
-            /*
-            holder.editIcon.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    currentLanguage = language;
-                    notifyDataSetChanged();
-                }
-            });*/
-
-
 
             holder.enabledCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override

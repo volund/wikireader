@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public class WordpressDictionaries {
+public class WordreferenceDictionaries {
      Map<String, String[]> localeMap() {
          Map<String, String[]> map = new HashMap<>();
          map.put("ES", new String[] {"EN", "FR", "PT", "IT", "DE", "ES"});
@@ -31,13 +31,12 @@ public class WordpressDictionaries {
          return map;
      }
 
-
      Dictionary dictionary(String srcLocale, String dstLocale) {
         Locale srcLc = new Locale(srcLocale);
         Locale dstLc = new Locale(dstLocale);
 
         String name = "Wordreference (" + srcLocale.toUpperCase() + "-" + dstLocale.toUpperCase() + ")";
-        String url = "https://www.wordreference.com/" + srcLocale.toLowerCase() + dstLocale.toLowerCase() + "/";
+        String url = "https://www.wordreference.com/" + srcLocale.toLowerCase() + dstLocale.toLowerCase() + "/%s";
         String dstLanguage = dstLc.getDisplayLanguage(dstLc);
         return new Dictionary(name, dstLanguage, url);
      }

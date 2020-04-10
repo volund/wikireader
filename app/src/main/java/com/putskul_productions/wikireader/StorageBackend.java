@@ -23,10 +23,7 @@ public class StorageBackend {
     public <T> List<T> getListValue(Context context, String key, TypeToken type) {
         String json = stringValue(context, key, "");
         Gson gson = new Gson();
-        //Log.e("WIKIREADER", "before parse [" + json + "]");
-        //Type listType = new TypeToken<ArrayList<Language>>() {}.getType();
         List<T> list = gson.fromJson(json, type.getType());
-        //Log.e("WIKIREADER", "parsed: [" + list);
         return list;
     }
 

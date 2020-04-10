@@ -180,6 +180,7 @@ public class SitesActivity extends AppCompatActivity implements SitesAdapter.OnC
         builder.setTitle("Select dictionary (" + language.label + ")");
         final Context context = this;
         String[] dictionaries = new String[language.dictionaries.size()];
+        Log.e("WIKIREADER", "found [" + language.dictionaries.size() + "] dictionaries");
         int i = 0;
         for (Dictionary dict : language.dictionaries) {
             dictionaries[i] = dict.name;
@@ -190,6 +191,7 @@ public class SitesActivity extends AppCompatActivity implements SitesAdapter.OnC
             public void onClick(DialogInterface dialogInterface, int i) {
                 language.currentDictionary = language.dictionaries.get(i);
                 Storage.shared.updateLanguage(context, language);
+                refreshData();
             }
         });
         builder.show();
@@ -210,7 +212,6 @@ public class SitesActivity extends AppCompatActivity implements SitesAdapter.OnC
         final Context context = this;
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(msg);
-//        builder.setMessage(msg);
         builder.setIcon(android.R.drawable.ic_dialog_alert);
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
@@ -242,6 +243,5 @@ public class SitesActivity extends AppCompatActivity implements SitesAdapter.OnC
         else {
             finish();
         }
-        Log.e("WIKIREADER", "onBackPressed Called");
     }
 }

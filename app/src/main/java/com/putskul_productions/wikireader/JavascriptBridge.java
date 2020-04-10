@@ -24,8 +24,6 @@ public class JavascriptBridge {
 
     @JavascriptInterface
     public void lookupWord(String word) {
-        Log.e("WIKIREADER", "Looking up " + word);
-
         String cleanWord = word;
 
         String[] prefixes = {"L'", "l'", "D'", "d'", "C'", "c'", "Un'", "un'", "dell'", "Dell'", "Nell'", "nell'"};
@@ -39,7 +37,7 @@ public class JavascriptBridge {
         lookupWithoutCleaning(cleanWord);
     }
 
-    public void lookupWithoutCleaning(String word) {
+    public void lookupWithoutCleaning(final String word) {
         final BrowserActivity act = mContext;
         final String lookupWord = word;
         final Runnable onDismiss = new Runnable() {
@@ -54,9 +52,17 @@ public class JavascriptBridge {
 
             @Override
             public void run() {
-                String dicturl = Settings.shared.dictionaryURL(mContext);
-                Log.e("WIKIREADER", "DBG dict url is[" + dicturl + "]");
-                LookupDialog lookupDialog = new LookupDialog(act, dicturl + lookupWord, onDismiss);
+                Language language = Settings.shared.getCurrentLanguage(act);
+                Dictionary dictionary = language.currentDictionary;
+                String wordURL = dictionary.urlForWord(lookupWord);
+
+                Log.e("WIKIREADER", "DBG lookupword [" + lookupWord + "]");
+
+                Log.e("WIKIREADER", "DBG wordurl [" + wordURL + "]");
+                Log.e("WIKIREADER", "DBG language [" + language + "]");
+                Log.e("WIKIREADER", "DBG dictionary [" + dictionary + "]");
+
+                LookupDialog lookupDialog = new LookupDialog(act, wordURL, onDismiss);
                 lookupDialog.show();
             }
         });
@@ -64,8 +70,6 @@ public class JavascriptBridge {
 
     @JavascriptInterface
     public void lookupCompositeWord(String word) {
-        Log.e("WIKIREADER", "Looking up composite " + word);
-
         if (word.contains("'")) {
             ArrayList<String> options = new ArrayList<String>();
             for (String op: word.split("'")) {

@@ -15,10 +15,9 @@ public class Dictionary {
         urlTemplate = pUrlTemplate;
     }
 
-    URL urlForWord(String word) throws MalformedURLException {
-        String urlStr = urlTemplate.replace("%s", word);
-        return new URL(urlStr);
+    String urlForWord(String word) {
+        return urlTemplate.replace("%s", word);
     }
 
-    final static Dictionary BlankDictionary = new Dictionary("Blank dictionary", "", "about:blank");
+    final static Dictionary BlankDictionary = new Dictionary("None", "", "about:blank");
 }

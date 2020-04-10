@@ -13,7 +13,7 @@ import android.widget.Button;
 
 public class SettingsActivity extends AppCompatActivity {
 
-    Button mDictionaryButton;
+    //Button mDictionaryButton;
     Button mSitesButton;
 
     @Override
@@ -33,17 +33,19 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
+        /*
         mDictionaryButton = (Button)findViewById(R.id.dictionaryButton);
         mDictionaryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showDictionaryLanguageDialog();
             }
-        });
+        });*/
 
-        updateDictionaryButtonText();
+///        updateDictionaryButtonText();
     }
 
+    /*
     void updateDictionaryButtonText() {
         mDictionaryButton.setText("Dictionray: " + Settings.shared.dictionaryLanguage(this));
     }
@@ -61,6 +63,6 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
         builder.show();
-    }
+    }*/
 
 }

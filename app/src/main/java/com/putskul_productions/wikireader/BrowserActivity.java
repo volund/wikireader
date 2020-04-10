@@ -39,6 +39,7 @@ public class BrowserActivity extends AppCompatActivity {
         if (Storage.shared.isFreshInstall(this)) {
             Storage.shared.setLanguages(this, Settings.shared.defaultLanguages());
             Storage.shared.setIsFreshInstall(this, false);
+            showLanguageSelectionActivity();
         }
 
         setContentView(R.layout.activity_browser);
@@ -56,8 +57,8 @@ public class BrowserActivity extends AppCompatActivity {
         final Context context = this;
         mLeftMenuView.setmListener(new OnClickMenu() {
             @Override
-            public void onClick(Site site) {
-                Settings.shared.setSourceLanguage(context, "en");
+            public void onClick(Language language, Site site) {
+                Settings.shared.setCurrentLanguage(context, language);
                 mWebView.loadUrl(site.address);
                 closeDrawer(null);
             }
@@ -237,12 +238,19 @@ public class BrowserActivity extends AppCompatActivity {
             mWebView.goForward();
         }
         else if (id == R.id.action_settings) {
-
-            Intent intent = new Intent(this, SettingsActivity.class);
-            startActivity(intent);
-
+            showSettingsActivity();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    void showSettingsActivity() {
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
+    }
+
+    void showLanguageSelectionActivity() {
+        Intent intent = new Intent(this, SitesActivity.class);
+        startActivity(intent);
     }
 
     @Override
@@ -262,5 +270,11 @@ public class BrowserActivity extends AppCompatActivity {
     public void openDrawer() {
         mDrawerLayout.setDrawerListener(null);
         mDrawerLayout.openDrawer(GravityCompat.START);
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        mLeftMenuView.setData();
     }
 }

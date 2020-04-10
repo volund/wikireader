@@ -77,7 +77,7 @@ public class SimpleLeftMenuView extends NavigationView {
         this.mListener = mListener;
     }
 
-    private void setData() {
+    void setData() {
         List<Language> languages = Storage.shared.getLanguages(getContext());
         List<Object> sections = new ArrayList<>();
         for (Language language : languages) {
@@ -89,11 +89,11 @@ public class SimpleLeftMenuView extends NavigationView {
 
         mItemsAdapter = new MenuItemsAdapter(mContext, sections, new OnClickMenu() {
             @Override
-            public void onClick(Site site) {
+            public void onClick(Language language, Site site) {
 
                 //mItemsAdapter.setLastSelectedSection(site);
                 if (mListener != null)
-                    mListener.onClick(site);
+                    mListener.onClick(language, site);
             }
         });
         mItemsList.setAdapter(mItemsAdapter);

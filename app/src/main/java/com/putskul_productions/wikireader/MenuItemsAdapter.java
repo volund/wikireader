@@ -95,10 +95,19 @@ public class MenuItemsAdapter extends BaseAdapter {
             holder.mTitle.setPadding(35, 40, 30, 0);
         }
         else {
+            Site site = (Site)obj;
+            Language language = Language.NoLanguage;
+            for (int i = position; i >= 0; i -= 1) {
+                if ((mSections.get(i) instanceof Language) && (((Language)mSections.get(i)).sites.contains(site))) {
+                    language = (Language)mSections.get(i);
+                    break;
+                }
+            }
             holder.mTitle.setTextColor(Color.WHITE);
             holder.mTitle.setTextSize(22);
             holder.mTitle.setPadding(60, 20, 50, 0);
-            holder.site = (Site)obj;
+            holder.site = site;
+            holder.language = language;
         }
 
         holder.mLayoutItem.setOnTouchListener(new View.OnTouchListener() {
@@ -117,7 +126,7 @@ public class MenuItemsAdapter extends BaseAdapter {
                     case MotionEvent.ACTION_UP:
                         if (holder.clickable) {
                             holder.mTitle.setTextColor(currentTextcolor);
-                            mListener.onClick(holder.site);
+                            mListener.onClick(holder.language, holder.site);
                         }
                         return true;
 
@@ -142,6 +151,7 @@ public class MenuItemsAdapter extends BaseAdapter {
         TextView mTitle;
         LinearLayout mLayoutItem;
         boolean clickable = true;
+        Language language;
         Site site;
         int position;
 

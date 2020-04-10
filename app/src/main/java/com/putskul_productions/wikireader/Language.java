@@ -36,4 +36,6 @@ public class Language implements Comparable {
         Language lang = (Language)obj;
         return label.compareTo(lang.label);
     }
+
+    final static Language NoLanguage = new Language("None");
 }
