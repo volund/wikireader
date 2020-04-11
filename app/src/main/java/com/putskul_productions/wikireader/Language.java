@@ -11,6 +11,7 @@ public class Language implements Comparable {
     public List<Site> sites;
     public List<Dictionary> dictionaries;
     public Dictionary currentDictionary;
+    public String lastVisitedURL;
 
     public Language(String pLabel) {
         enabled = false;

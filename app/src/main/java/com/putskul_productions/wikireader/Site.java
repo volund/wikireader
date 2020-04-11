@@ -5,10 +5,12 @@ import android.support.annotation.NonNull;
 public class Site implements Comparable {
     public String label;
     public String address;
+    public String lastVisitedURL;
 
     Site(String pLabel, String pAddress) {
         label = pLabel.trim();
         address = pAddress.trim();
+        lastVisitedURL = address;
     }
 
     public boolean equals(Object obj) {
@@ -28,4 +30,6 @@ public class Site implements Comparable {
         Site site = (Site)obj;
         return site.label.compareTo(label);
     }
+
+    final static Site BlankSite = new Site("None", "about:blank");
 }

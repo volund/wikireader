@@ -55,13 +55,6 @@ public class JavascriptBridge {
                 Language language = Settings.shared.getCurrentLanguage(act);
                 Dictionary dictionary = language.currentDictionary;
                 String wordURL = dictionary.urlForWord(lookupWord);
-
-                Log.e("WIKIREADER", "DBG lookupword [" + lookupWord + "]");
-
-                Log.e("WIKIREADER", "DBG wordurl [" + wordURL + "]");
-                Log.e("WIKIREADER", "DBG language [" + language + "]");
-                Log.e("WIKIREADER", "DBG dictionary [" + dictionary + "]");
-
                 LookupDialog lookupDialog = new LookupDialog(act, wordURL, onDismiss);
                 lookupDialog.show();
             }
@@ -98,7 +91,7 @@ public class JavascriptBridge {
 
     @JavascriptInterface
     public void handleLink(String address, String title) {
-        Log.e("WIKIREADER", "Handling URL " + address + " for " + title);
+        //Log.e("WIKIREADER", "Handling URL " + address + " for " + title);
 
         ArrayList<String> options = new ArrayList<String>();
         for (String op: title.split(" ")) {
@@ -118,12 +111,11 @@ public class JavascriptBridge {
                 if (which < values.length - 1) {
                     lookupWord(values[which]);
                 } else {
-                    Log.e("WIKIREADER", "following " + relativeHref);
+                    //Log.e("WIKIREADER", "following " + relativeHref);
                     mContext.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             mContext.mWebView.evaluateJavascript("window.location.href = '" + relativeHref + "'", null);
-
                         }
                     });
                 }

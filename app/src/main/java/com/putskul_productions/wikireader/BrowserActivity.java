@@ -17,11 +17,16 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import java.util.Set;
+
 
 public class BrowserActivity extends AppCompatActivity {
     protected SimpleLeftMenuView mLeftMenuView;
     protected DrawerLayout mDrawerLayout;
     WebView mWebView = null;
+    boolean shouldClearHistoryOnLoad = false;
+    MenuItem historyBackButton;
+    MenuItem historyForwardButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,8 +54,16 @@ public class BrowserActivity extends AppCompatActivity {
         mLeftMenuView.setmListener(new OnClickMenu() {
             @Override
             public void onClick(Language language, Site site) {
+
                 Settings.shared.setCurrentLanguage(context, language);
-                mWebView.loadUrl(site.address);
+                Settings.shared.setCurrentSite(context, site);
+                /*
+                Log.e("WIKIREADER", "loading last URL: [" + site.lastVisitedURL + "] for site [" + site.address +"]");*/
+                String url = Settings.shared.lastVisitedURL(context, language, site);
+                Log.e("WIKIREADER", "DBG loading last URL: [" + url + "] for site [" + language.label + "-" + site.label +"]");
+                Log.e("WIKIREADER", "DBG did clear history ");
+                shouldClearHistoryOnLoad = true;
+                mWebView.loadUrl(url);
                 closeDrawer(null);
             }
         });
@@ -78,11 +91,32 @@ public class BrowserActivity extends AppCompatActivity {
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 super.onPageStarted(view, url, favicon);
                 webViewPreviousState = PAGE_STARTED;
+
+                Language language = Settings.shared.getCurrentLanguage(finalThis);
+                Site site = Settings.shared.getCurrentSite(finalThis);
+
+                /*
+                site.lastVisitedURL = url;
+                Log.e("WIKIREADER", "setting last URL: [" + site.lastVisitedURL + "] for site [" + site.address +"]");
+                Storage.shared.updateLanguage(finalThis, language); // use implicit fact that the current site is part of the current language
+                */
+                Log.e("WIKIREADER", "DBG setting last URL: [" + site.lastVisitedURL + "] for  [" + language.label + "-" +site.label +"]");
+                Settings.shared.setLastVisitedURL(finalThis, language, site, url);
             }
 
             @Override
             public void onPageFinished(WebView view, String url) {
 
+                if(shouldClearHistoryOnLoad){
+                    Log.d("WIKIREADER", "DBG A clearing History now");
+                    shouldClearHistoryOnLoad = false;
+                    mWebView.clearHistory();
+                }
+
+                historyBackButton.setEnabled(mWebView.canGoBack());
+                historyBackButton.getIcon().setAlpha(mWebView.canGoBack() ? 255 : 100);
+                historyForwardButton.setEnabled(mWebView.canGoForward());
+                historyForwardButton.getIcon().setAlpha(mWebView.canGoForward() ? 255 : 100);
 
                 if (webViewPreviousState == PAGE_STARTED) {
                     final String clickEvent = "document.body.addEventListener('click', function(event){  " +
@@ -153,7 +187,6 @@ public class BrowserActivity extends AppCompatActivity {
 
 
                     mWebView.evaluateJavascript(lookupFunction + clickEvent + dblclickEvent + expandSections, null);
-                    Settings.shared.setLastVisitedURL(finalThis, url);
                 }
 
             }
@@ -169,7 +202,9 @@ public class BrowserActivity extends AppCompatActivity {
             }
         });
 
-        String url = Settings.shared.lastVisitedURL(this);
+        Language language = Settings.shared.getCurrentLanguage(this);
+        Site site = Settings.shared.getCurrentSite(this);
+        String url = Settings.shared.lastVisitedURL(this, language, site);
         mWebView.loadUrl(url);
     }
 
@@ -200,7 +235,8 @@ public class BrowserActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_browser, menu);
-
+        historyBackButton = menu.findItem(R.id.action_back);
+        historyForwardButton = menu.findItem(R.id.action_forward);
         return true;
     }
 
@@ -215,13 +251,15 @@ public class BrowserActivity extends AppCompatActivity {
         if (id == android.R.id.home) {
             openDrawer();
         }
+        else if (id == R.id.HomeButton) {
+            Log.e("WIKIREADER", "DBG A going home");
+            mWebView.loadUrl(Settings.shared.getCurrentSite(this).address);
+        }
         else if (id == R.id.action_back) {
+            Log.e("WIKIREADER", "DBG back pressed");
             if (mWebView.canGoBack()) {
+                Log.e("WIKIREADER", "DBG going back in webview");
                 mWebView.goBack();
-            }
-            else {
-                //mWebView.loadUrl("https://it.wikipedia.org/");
-                mWebView.loadUrl("https://valerianeglia.wordpress.com");
             }
             return true;
         }
