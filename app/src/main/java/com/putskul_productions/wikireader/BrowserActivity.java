@@ -32,7 +32,8 @@ public class BrowserActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (Storage.shared.isFreshInstall(this)) {
+        boolean isFirstRun = Storage.shared.isFreshInstall(this);
+        if (isFirstRun) {
             Storage.shared.setLanguages(this, Settings.shared.defaultLanguages());
             Storage.shared.setIsFreshInstall(this, false);
             showLanguageSelectionActivity();
@@ -202,10 +203,12 @@ public class BrowserActivity extends AppCompatActivity {
             }
         });
 
-        Language language = Settings.shared.getCurrentLanguage(this);
-        Site site = Settings.shared.getCurrentSite(this);
-        String url = Settings.shared.lastVisitedURL(this, language, site);
-        mWebView.loadUrl(url);
+        if (!isFirstRun) {
+            Language language = Settings.shared.getCurrentLanguage(this);
+            Site site = Settings.shared.getCurrentSite(this);
+            String url = Settings.shared.lastVisitedURL(this, language, site);
+            mWebView.loadUrl(url);
+        }
     }
 
     public void promptForLink(String url) {
