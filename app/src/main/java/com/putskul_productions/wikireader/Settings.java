@@ -1,14 +1,19 @@
 package com.putskul_productions.wikireader;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 public class Settings {
     static final Settings shared = new Settings();
     private StorageBackend storage = new StorageBackend();
     WordreferenceDictionaries wordreference = new WordreferenceDictionaries();
+    NewsWebsites newsWebsites = new NewsWebsites();
 
     private String lastVisitedKey(Language language, Site site) {
         return language.label + "-" + site.label;
@@ -64,12 +69,29 @@ public class Settings {
     }
 
     public List<Language> defaultLanguages() {
+        Map<String, Language> languageMap = new HashMap<>();
+        for (String key : wordreference.sourceLocales()) {
+            String adjustedKey = key.equals("GR") ? "EL" : key.equals("CZ") ? "CS" : key;
+            Locale locale = new Locale(adjustedKey);//Locale(key.equals("GR") ? "EL" : key);
+            Language language = new Language(locale.getDisplayLanguage(locale));
+            language.dictionaries.addAll(wordreference.dictionariesForLocale(key));
+            language.sites.add(new Site(key.equals("AR") ? "ويكيبيديا" : "Wikipedia", "https://" + adjustedKey.toLowerCase() + ".wikipedia.org"));
+            language.sites.add(newsWebsites.websiteForLocale(key));
+            languageMap.put(key, language);
+        }
 
+        Language hebrew = new Language("עברית");
+        hebrew.sites.add(new Site("וויקיפידיה", "https://wikipedia.co.il"));
+        hebrew.sites.add(newsWebsites.websiteForLocale("HE"));
+
+        languageMap.get("IT").sites.add(new Site("Ascoltando le cicale", "https://valerianeglia.wordpress.com/"));
+        languageMap.get("FR").sites.add(new Site("En écoutant les cigales", "https://valerianeglia.wordpress.com/en-ecoutant-les-cigales/"));
+/*
         Language french = new Language("Français");
         Language italian = new Language("Italiano");
         Language portuguese = new Language("Português");
         Language english = new Language("English");
-        Language hebrew = new Language("עברית");
+
 
         italian.sites.add(new Site("Ascoltando le cicale", "https://valerianeglia.wordpress.com/"));
         italian.sites.add(new Site("Notizie", "https://news.google.it"));
@@ -98,6 +120,30 @@ public class Settings {
         languages.add(italian);
         languages.add(portuguese);
         languages.add(hebrew);
+*/
+
+        List<Language> languages = new ArrayList<Language>();
+        languages.add(languageMap.get("EN"));
+        languages.add(languageMap.get("ES"));
+        languages.add(languageMap.get("FR"));
+        languages.add(languageMap.get("IT"));
+        languages.add(languageMap.get("PT"));
+        languages.add(hebrew);
+        languages.add(languageMap.get("AR"));
+        languages.add(languageMap.get("CA"));
+        languages.add(languageMap.get("DE"));
+        languages.add(languageMap.get("NL"));
+        languages.add(languageMap.get("SV"));
+        languages.add(languageMap.get("RU"));
+        languages.add(languageMap.get("PL"));
+        languages.add(languageMap.get("RO"));
+        languages.add(languageMap.get("CZ"));
+        languages.add(languageMap.get("GR"));
+        languages.add(languageMap.get("TR"));
+        languages.add(languageMap.get("ZH"));
+        languages.add(languageMap.get("JA"));
+        languages.add(languageMap.get("KO"));
+
 
         return languages;
     }

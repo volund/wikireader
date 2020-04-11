@@ -5,8 +5,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 public class WordreferenceDictionaries {
+     String[] sourceLocales() {
+         Set<String> keys = localeMap().keySet();
+         return keys.toArray(new String[keys.size()]);
+     }
+
      Map<String, String[]> localeMap() {
          Map<String, String[]> map = new HashMap<>();
          map.put("ES", new String[] {"EN", "FR", "PT", "IT", "DE", "ES"});
