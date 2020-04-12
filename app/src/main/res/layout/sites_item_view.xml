@@ -20,12 +20,17 @@
 
     <TextView
         android:id="@+id/siteLabelTextView"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingTop="10px"
         android:paddingLeft="30px"
+        android:paddingRight="30px"
         android:layout_weight="1"
-        android:textSize="15pt"/>
+        android:textSize="15pt"
+        android:autoSizeTextType="uniform"
+        android:autoSizeMinTextSize="12sp"
+        android:autoSizeMaxTextSize="100sp"
+        android:autoSizeStepGranularity="2sp"/>
 
         <ImageView
             android:id="@+id/editIcon"
@@ -50,7 +55,11 @@
         android:paddingLeft="30px"
         android:paddingTop="5px"
         android:paddingBottom="50px"
-        android:textSize="10pt"/>
+        android:textSize="10pt"
+        android:autoSizeTextType="uniform"
+        android:autoSizeMinTextSize="12sp"
+        android:autoSizeMaxTextSize="100sp"
+        android:autoSizeStepGranularity="2sp"/>
 
     <View
         android:layout_width="match_parent"
