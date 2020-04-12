@@ -121,7 +121,7 @@ public class BrowserActivity extends AppCompatActivity {
                     final String clickEvent = "document.body.addEventListener('click', function(event){  " +
                             "  var target = event.target || event.srcElement; " +
                             "  if ((target.tagName === 'A') || (target.tagName === 'a')) { " +
-                          //  "    console.log('DBG did tap link' + JSON.stringify(target)); " +
+                            //  "    console.log('DBG did tap link' + JSON.stringify(target)); " +
                             "    event.preventDefault(); javascriptBridge.handleLink(target.getAttribute('href'), target.innerHTML); " +
                             "    return false; " +
                             "  } " +
@@ -175,15 +175,7 @@ public class BrowserActivity extends AppCompatActivity {
             }
         });
 
-        mWebView.setWebChromeClient(new WebChromeClient() {
-            @Override
-            public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
-                Log.e("WEBVIEW", consoleMessage.message() + " -- From line "
-                        + consoleMessage.lineNumber() + " of "
-                        + consoleMessage.sourceId());
-                return super.onConsoleMessage(consoleMessage);
-            }
-        });
+        mWebView.setWebChromeClient(new LoggingChromeClient());
 
         if (!isFirstRun) {
             Language language = Settings.shared.getCurrentLanguage(this);
