@@ -16,7 +16,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
-public class MenuItemsAdapter extends BaseAdapter {
+public class SideDrawerAdapter extends BaseAdapter {
 
     private Context mContext;
     private static Object lastSelectedSection;
@@ -25,7 +25,7 @@ public class MenuItemsAdapter extends BaseAdapter {
     private int currentTextcolor;
     private OnClickMenu mListener;
 
-    public MenuItemsAdapter(Context context, List<Object> sections, OnClickMenu listener) {
+    public SideDrawerAdapter(Context context, List<Object> sections, OnClickMenu listener) {
         mContext = context;
         mSections = sections;
         mListener = listener;

@@ -86,41 +86,11 @@ public class Settings {
 
         languageMap.get("IT").sites.add(new Site("Ascoltando le cicale", "https://valerianeglia.wordpress.com/"));
         languageMap.get("FR").sites.add(new Site("En écoutant les cigales", "https://valerianeglia.wordpress.com/en-ecoutant-les-cigales/"));
-/*
-        Language french = new Language("Français");
-        Language italian = new Language("Italiano");
-        Language portuguese = new Language("Português");
-        Language english = new Language("English");
 
 
-        italian.sites.add(new Site("Ascoltando le cicale", "https://valerianeglia.wordpress.com/"));
-        italian.sites.add(new Site("Notizie", "https://news.google.it"));
-        italian.sites.add(new Site("Wikipedia", "https://www.wikipedia.it"));
-        french.sites.add(new Site("En écoutant les cigales", "https://valerianeglia.wordpress.com/en-ecoutant-les-cigales/"));
-        french.sites.add(new Site("Infos", "https://news.google.fr"));
-        french.sites.add(new Site("Wikipedia", "https://fr.wikipedia.org"));
-        portuguese.sites.add(new Site("Notícias","https://news.google.com.br"));
-        portuguese.sites.add(new Site("Wikipedia","https://pt.wikipedia.org"));
-        english.sites.add(new Site("Wikipedia","https://en.wikipedia.org"));
-        hebrew.sites.add(new Site("וויקיפידיה", "https://wikipedia.co.il"));
-
-        italian.dictionaries.addAll(wordreference.dictionariesForLocale("IT"));
-        french.dictionaries.addAll(wordreference.dictionariesForLocale("FR"));
-        portuguese.dictionaries.addAll(wordreference.dictionariesForLocale("PT"));
-
-        english.dictionaries.add(new Dictionary("אנגלית - עברית (מורפיקס)", "עברית", "https://www.morfix.co.il/en/%s"));
-        english.dictionaries.addAll(wordreference.dictionariesForLocale("EN"));
-
-        hebrew.dictionaries.add(new Dictionary("עברית - עברית (מילוג)", "עברית", "https://milog.co.il/%s"));
-        hebrew.dictionaries.add(new Dictionary("Hebrew - English (Morfix)", "English", "https://www.morfix.co.il/en/%s"));
-
-        List<Language> languages = new ArrayList<>();
-        languages.add(english);
-        languages.add(french);
-        languages.add(italian);
-        languages.add(portuguese);
-        languages.add(hebrew);
-*/
+        languageMap.get("HE").dictionaries.add(new Dictionary("עברית - עברית (מילוג)", "עברית", "https://milog.co.il/%s"));
+        languageMap.get("HE").dictionaries.add(new Dictionary("Hebrew - English (Morfix)", "English", "https://www.morfix.co.il/en/%s"));
+        languageMap.get("EN").dictionaries.add(new Dictionary("אנגלית - עברית (מורפיקס)", "עברית", "https://www.morfix.co.il/en/%s"));
 
         List<Language> languages = new ArrayList<Language>();
         languages.add(languageMap.get("EN"));

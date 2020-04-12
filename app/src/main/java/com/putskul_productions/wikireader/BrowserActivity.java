@@ -21,7 +21,7 @@ import android.widget.ProgressBar;
 
 
 public class BrowserActivity extends AppCompatActivity {
-    protected SimpleLeftMenuView mLeftMenuView;
+    protected SideDrawerView mSideDrawer;
     protected DrawerLayout mDrawerLayout;
     MenuItem historyBackButton;
     MenuItem historyForwardButton;
@@ -50,11 +50,11 @@ public class BrowserActivity extends AppCompatActivity {
         mWebView = findViewById(R.id.webview);
         mProgressBar = findViewById(R.id.webProgressBar);
         mProgressBar.setVisibility(View.INVISIBLE);
-        mLeftMenuView = findViewById(R.id.navigation_view);
+        mSideDrawer = findViewById(R.id.navigation_view);
         mDrawerLayout = findViewById(R.id.drawerLayout);
 
         final Context context = this;
-        mLeftMenuView.setmListener(new OnClickMenu() {
+        mSideDrawer.setmListener(new OnClickMenu() {
             @Override
             public void onClick(Language language, Site site) {
 
@@ -97,7 +97,6 @@ public class BrowserActivity extends AppCompatActivity {
                 Site site = Settings.shared.getCurrentSite(finalThis);
 
                 Settings.shared.setLastVisitedURL(finalThis, language, site, url);
-
                 mProgressBar.setVisibility(View.VISIBLE);
             }
 
@@ -170,23 +169,7 @@ public class BrowserActivity extends AppCompatActivity {
                             "  }" +
                             "}";
 
-                    //Log.e("WIKIREADER", "DBG X on start expanding " + Settings.shared.getExpandedSections(finalThis));
-
-                    // TODO: this script can't find the right h2 to click it...
-                    //       seems to work though if I just select al h2s (except then it expands all sections)
-                    final String expandSections = ""; /*+
-                            "var expanded_section_ids = JSON.parse('" + Settings.shared.getExpandedSections(finalThis) + "'); " +
-                            " for (var expanded_section_id of expanded_section_ids) { " +
-                            "    console.log('DBG clicking ' + expanded_section_id + '| ' + 'h2[aria-controls=\"' + expanded_section_id + '\"]'); " +
-                            "    var h2s = document.querySelectorAll('h2[aria-controls=\"' + expanded_section_id + '\"');" +
-                            "    console.log('DBG found for clicking ' + JSON.stringify(h2s));" +
-                            "    for (var h2 of h2s) { " +
-                            "      h2.click(); console.log('DBG clicked on ' + h2); " +
-                            "    } " +
-                            " } ";*/
-
-
-                    mWebView.evaluateJavascript(lookupFunction + clickEvent + dblclickEvent + expandSections, null);
+                    mWebView.evaluateJavascript(lookupFunction + clickEvent + dblclickEvent, null);
                 }
 
             }
@@ -210,32 +193,8 @@ public class BrowserActivity extends AppCompatActivity {
         }
     }
 
-    public void promptForLink(String url) {
-       // Log.e("WIKIREADER", "prompting for " + url);
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-/*
-        Log.e("WIKIREADER", "DBG T00 saving state..");
-        String saveStateScript =  "  console.log('DBG T08'); " +
-                "  var expanded_ids = [];" +
-                "  var divs = document.querySelectorAll('div[aria-expanded=\"true\"');" +
-                "  var expanded_ids = Array.prototype.map.call(divs, function(div) { return div.id }); " +
-                "  console.log('DBG T1 found expanded: ' + JSON.stringify(expanded_ids)); " +
-                "  javascriptBridge.testx('hello test x');";
-               // "  javascriptBridge.saveExpandedSections(JSON.stringify(expanded_ids));";
-
-
-        mWebView.evaluateJavascript(saveStateScript, null);
-        */
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_browser, menu);
         historyBackButton = menu.findItem(R.id.action_back);
         historyForwardButton = menu.findItem(R.id.action_forward);
@@ -246,7 +205,6 @@ public class BrowserActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        final BrowserActivity finalThis = this;
         if (id == android.R.id.home) {
             openDrawer();
         }
@@ -260,7 +218,10 @@ public class BrowserActivity extends AppCompatActivity {
             return true;
         }
         else if (id == R.id.action_forward) {
-            mWebView.goForward();
+            if (mWebView.canGoForward()) {
+                mWebView.goForward();
+            }
+            return true;
         }
         else if (id == R.id.action_settings) {
             showSettingsActivity();
@@ -299,12 +260,6 @@ public class BrowserActivity extends AppCompatActivity {
 
     @Override
     public void onResume(){
-        // #c9a1ff
-        // #f3ffde
-        // #F6E6FF
-        // #B1C0FA
-        // #c0b1fa
-        // #ece6ff
         if (Storage.shared.enabledLanguages(this).size() == 0) {
             String html = "<html><body style='background: #ece6ff; text-align: center; color: #444; '><br><br><p>No content selected, try the settings<p></body></html>";
             mWebView.loadData(html, "text/html; charset=utf-8", "UTF-8");
@@ -315,6 +270,6 @@ public class BrowserActivity extends AppCompatActivity {
         }
 
         super.onResume();
-        mLeftMenuView.setData();
+        mSideDrawer.setData();
     }
 }

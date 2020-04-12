@@ -1,9 +1,5 @@
 package com.putskul_productions.wikireader;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Locale;
-
 public class Dictionary {
     String urlTemplate;
     String name;

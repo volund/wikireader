@@ -14,22 +14,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class SimpleLeftMenuView extends NavigationView {
+public class SideDrawerView extends NavigationView {
     private LayoutInflater mInflater;
     private Context mContext;
-
     private ListView mItemsList;
-    private MenuItemsAdapter mItemsAdapter;
-    private ProgressBar mProgress;
-
+    private SideDrawerAdapter mItemsAdapter;
     private OnClickMenu mListener;
 
     private ImageView mHeader;
-    private TextView userName;
-    private TextView userEmail;
 
     //region Constructors
-    public SimpleLeftMenuView(Context context) {
+    public SideDrawerView(Context context) {
         super(context);
         mContext = context;
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -37,7 +32,7 @@ public class SimpleLeftMenuView extends NavigationView {
         setData();
     }
 
-    public SimpleLeftMenuView(Context context, AttributeSet attrs) {
+    public SideDrawerView(Context context, AttributeSet attrs) {
         super(context, attrs);
         mContext = context;
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -45,7 +40,7 @@ public class SimpleLeftMenuView extends NavigationView {
         setData();
     }
 
-    public SimpleLeftMenuView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public SideDrawerView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mContext = context;
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -67,9 +62,6 @@ public class SimpleLeftMenuView extends NavigationView {
         });
     }
 
-    public void setSelectedSection(String idSection) {
-        mItemsAdapter.setLastSelectedSection(idSection);
-    }
 
     public void setmListener(OnClickMenu mListener) {
         this.mListener = mListener;
@@ -85,19 +77,16 @@ public class SimpleLeftMenuView extends NavigationView {
             }
         }
 
-        mItemsAdapter = new MenuItemsAdapter(mContext, sections, new OnClickMenu() {
+        mItemsAdapter = new SideDrawerAdapter(mContext, sections, new OnClickMenu() {
             @Override
             public void onClick(Language language, Site site) {
 
-                //mItemsAdapter.setLastSelectedSection(site);
                 if (mListener != null)
                     mListener.onClick(language, site);
             }
         });
         mItemsList.setAdapter(mItemsAdapter);
         mItemsAdapter.notifyDataSetChanged();
-//        mItemsList.setSelection(0);
-//        mItemsList.setItemChecked(0, true);
     }
 
 }
