@@ -7,6 +7,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,6 +17,9 @@ import android.widget.ProgressBar;
 
 
 public class BrowserActivity extends AppCompatActivity implements CustomWebClient.WebClientListener {
+    String no_content_html = "<html><body style='background: #ece6ff; text-align: center; color: #444; '><br><br><p>No content selected, try the settings<p></body></html>";
+    String no_site_selected_html = "<html><body style='background: #ece6ff; text-align: center; color: #444;'><br><br><p>Select a website from the menu on the left.</p><p><strong>Double-tap a word</strong> to see the dictionary definition</p></body></html>";
+
     protected SideDrawerView mSideDrawer;
     protected DrawerLayout mDrawerLayout;
     MenuItem historyBackButton;
@@ -150,16 +154,17 @@ public class BrowserActivity extends AppCompatActivity implements CustomWebClien
 
     @Override
     public void onResume(){
-        if (Storage.shared.enabledLanguages(this).size() == 0) {
-            String html = "<html><body style='background: #ece6ff; text-align: center; color: #444; '><br><br><p>No content selected, try the settings<p></body></html>";
-            mWebView.loadData(html, "text/html; charset=utf-8", "UTF-8");
-        }
-        else if (Settings.shared.getCurrentSite(this).equals(Site.BlankSite)) {
-            String html = "<html><body style='background: #ece6ff; text-align: center; color: #444;'><br><br><p>Select a website from the menu on the left.</p><p><strong>Double-tap a word</strong> to see the dictionary definition</p></body></html>";
-            mWebView.loadData(html, "text/html; charset=utf-8", "UTF-8");
-        }
-
         super.onResume();
+        if (!Storage.shared.hasEnabledLanguages(this)) {
+            mWebView.loadData(no_content_html, "text/html; charset=utf-8", "UTF-8");
+        }
+        else if (Settings.shared.currentSiteIsBlank(this)) {
+            // Does not load correctly after first time selecting content
+            // loading from the UI thread after a delay does not fix
+            // but for some unknown reason loading it twice fixes it
+            mWebView.loadData(no_site_selected_html, "text/html; charset=utf-8", "UTF-8");
+            mWebView.loadData(no_site_selected_html, "text/html; charset=utf-8", "UTF-8");
+        }
         mSideDrawer.setData();
     }
 

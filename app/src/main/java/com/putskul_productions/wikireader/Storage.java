@@ -69,4 +69,8 @@ public class Storage {
         }
         return enabled;
     }
+
+    public boolean hasEnabledLanguages(Context context) {
+        return enabledLanguages(context).size() > 0;
+    }
 }

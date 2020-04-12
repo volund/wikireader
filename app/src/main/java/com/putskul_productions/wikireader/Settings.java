@@ -59,6 +59,9 @@ public class Settings {
         storage.setStringValue(context, "current-site", site.address);
     }
 
+    public boolean currentSiteIsBlank(Context context) {
+        return getCurrentSite(context).equals(Site.BlankSite);
+    }
 
     public void setExpandedSections(Context context, String expandedSections) {
         storage.setStringValue(context, "expanded-sections", expandedSections);
