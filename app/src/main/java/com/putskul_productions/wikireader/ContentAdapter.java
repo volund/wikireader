@@ -66,6 +66,8 @@ public class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.SitesVie
             holder.editIcon.setVisibility(View.GONE);
             holder.deleteIcon.setVisibility(View.GONE);
             holder.enabledCheckbox.setVisibility(View.VISIBLE);
+
+            holder.enabledCheckbox.setOnCheckedChangeListener(null);
             holder.enabledCheckbox.setChecked(language.enabled);
 
             holder.enabledCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

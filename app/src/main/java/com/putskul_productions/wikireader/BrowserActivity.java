@@ -97,13 +97,7 @@ public class BrowserActivity extends AppCompatActivity {
 
                 Language language = Settings.shared.getCurrentLanguage(finalThis);
                 Site site = Settings.shared.getCurrentSite(finalThis);
-
-                /*
-                site.lastVisitedURL = url;
-                Log.e("WIKIREADER", "setting last URL: [" + site.lastVisitedURL + "] for site [" + site.address +"]");
-                Storage.shared.updateLanguage(finalThis, language); // use implicit fact that the current site is part of the current language
-                */
-                Log.e("WIKIREADER", "DBG setting last URL: [" + site.lastVisitedURL + "] for  [" + language.label + "-" +site.label +"]");
+                
                 Settings.shared.setLastVisitedURL(finalThis, language, site, url);
             }
 
@@ -111,15 +105,18 @@ public class BrowserActivity extends AppCompatActivity {
             public void onPageFinished(WebView view, String url) {
 
                 if(shouldClearHistoryOnLoad){
-                    Log.d("WIKIREADER", "DBG A clearing History now");
                     shouldClearHistoryOnLoad = false;
                     mWebView.clearHistory();
                 }
 
-                historyBackButton.setEnabled(mWebView.canGoBack());
-                historyBackButton.getIcon().setAlpha(mWebView.canGoBack() ? 255 : 100);
-                historyForwardButton.setEnabled(mWebView.canGoForward());
-                historyForwardButton.getIcon().setAlpha(mWebView.canGoForward() ? 255 : 100);
+                if (historyBackButton != null) {
+                    historyBackButton.setEnabled(mWebView.canGoBack());
+                    historyBackButton.getIcon().setAlpha(mWebView.canGoBack() ? 255 : 100);
+                }
+                if (historyForwardButton != null) {
+                    historyForwardButton.setEnabled(mWebView.canGoForward());
+                    historyForwardButton.getIcon().setAlpha(mWebView.canGoForward() ? 255 : 100);
+                }
 
                 if (webViewPreviousState == PAGE_STARTED) {
                     final String clickEvent = "document.body.addEventListener('click', function(event){  " +

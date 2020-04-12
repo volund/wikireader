@@ -149,7 +149,7 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
         if (language.enabled) {
             showDictionarySelectionDialog(language);
         }
-        refreshData();
+        //refreshData();
     }
 
     void refreshData() {
@@ -158,6 +158,9 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
     }
 
     void showDictionarySelectionDialog(final Language language) {
+        for (StackTraceElement ste : Thread.currentThread().getStackTrace()) {
+            Log.e("WIKIREADER", "DBG C " + ste);
+        }
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Select dictionary (" + language.label + ")");
         final Context context = this;

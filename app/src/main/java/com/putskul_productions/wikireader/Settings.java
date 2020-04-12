@@ -37,7 +37,7 @@ public class Settings {
                 return language;
             }
         }
-        return languages.size() > 0 ? languages.get(0) : Language.NoLanguage;
+        return Language.NoLanguage;
     }
 
     public void setCurrentLanguage(Context context, Language language) {
