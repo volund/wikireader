@@ -113,6 +113,7 @@ public class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.SitesVie
                     mOnClickSiteListener.onDelete(currentLanguage, site);
                 }
             });
+            holder.layout.setOnTouchListener(null);
             /*
             holder.layout.setOnTouchListener(new View.OnTouchListener() {
                 @Override

@@ -116,7 +116,7 @@ public class BrowserActivity extends AppCompatActivity {
                     final String clickEvent = "document.body.addEventListener('click', function(event){  " +
                             "  var target = event.target || event.srcElement; " +
                             "  if ((target.tagName === 'A') || (target.tagName === 'a')) { " +
-                            "    console.log('DBG did tap link' + JSON.stringify(target)); " +
+                          //  "    console.log('DBG did tap link' + JSON.stringify(target)); " +
                             "    event.preventDefault(); javascriptBridge.handleLink(target.getAttribute('href'), target.innerHTML); " +
                             "    return false; " +
                             "  } " +
@@ -164,11 +164,11 @@ public class BrowserActivity extends AppCompatActivity {
                             "  }" +
                             "}";
 
-                    Log.e("WIKIREADER", "DBG X on start expanding " + Settings.shared.getExpandedSections(finalThis));
+                    //Log.e("WIKIREADER", "DBG X on start expanding " + Settings.shared.getExpandedSections(finalThis));
 
                     // TODO: this script can't find the right h2 to click it...
                     //       seems to work though if I just select al h2s (except then it expands all sections)
-                    final String expandSections = "" +
+                    final String expandSections = ""; /*+
                             "var expanded_section_ids = JSON.parse('" + Settings.shared.getExpandedSections(finalThis) + "'); " +
                             " for (var expanded_section_id of expanded_section_ids) { " +
                             "    console.log('DBG clicking ' + expanded_section_id + '| ' + 'h2[aria-controls=\"' + expanded_section_id + '\"]'); " +
@@ -177,7 +177,7 @@ public class BrowserActivity extends AppCompatActivity {
                             "    for (var h2 of h2s) { " +
                             "      h2.click(); console.log('DBG clicked on ' + h2); " +
                             "    } " +
-                            " } ";
+                            " } ";*/
 
 
                     mWebView.evaluateJavascript(lookupFunction + clickEvent + dblclickEvent + expandSections, null);
@@ -205,7 +205,7 @@ public class BrowserActivity extends AppCompatActivity {
     }
 
     public void promptForLink(String url) {
-        Log.e("WIKIREADER", "prompting for " + url);
+       // Log.e("WIKIREADER", "prompting for " + url);
     }
 
     @Override
@@ -238,9 +238,6 @@ public class BrowserActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
         final BrowserActivity finalThis = this;
@@ -296,12 +293,18 @@ public class BrowserActivity extends AppCompatActivity {
 
     @Override
     public void onResume(){
+        // #c9a1ff
+        // #f3ffde
+        // #F6E6FF
+        // #B1C0FA
+        // #c0b1fa
+        // #ece6ff
         if (Storage.shared.enabledLanguages(this).size() == 0) {
-            String html = "<html><body>No content selected, try the settings!</body></html>";
+            String html = "<html><body style='background: #ece6ff; text-align: center; color: #444; '><br><p>No content selected, try the settings<p></body></html>";
             mWebView.loadData(html, "text/html; charset=utf-8", "UTF-8");
         }
         else if (Settings.shared.getCurrentSite(this).equals(Site.BlankSite)) {
-            String html = "<html><body>Select a language from the menu on the left</body></html>";
+            String html = "<html><body style='background: #ece6ff; text-align: center; color: #444;'><br><p>Select a website from the menu on the left.</p><p><strong>Double-tap a word</strong> to see the dictionary definition</p></body></html>";
             mWebView.loadData(html, "text/html; charset=utf-8", "UTF-8");
         }
 
