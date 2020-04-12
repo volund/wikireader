@@ -2,25 +2,20 @@ package com.putskul_productions.wikireader;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.webkit.ConsoleMessage;
-import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
 
-public class BrowserActivity extends AppCompatActivity {
+public class BrowserActivity extends AppCompatActivity implements CustomWebClient.WebClientListener {
     protected SideDrawerView mSideDrawer;
     protected DrawerLayout mDrawerLayout;
     MenuItem historyBackButton;
@@ -57,7 +52,6 @@ public class BrowserActivity extends AppCompatActivity {
         mSideDrawer.setmListener(new OnClickMenu() {
             @Override
             public void onClick(Language language, Site site) {
-
                 Settings.shared.setCurrentLanguage(context, language);
                 Settings.shared.setCurrentSite(context, site);
                 /*
@@ -76,104 +70,8 @@ public class BrowserActivity extends AppCompatActivity {
         webViewSettings.setDefaultFontSize(21);
         mWebView.addJavascriptInterface(new JavascriptBridge(this), "javascriptBridge");
 
-        mWebView.setWebViewClient(new WebViewClient() {
-            private int       webViewPreviousState;
-            private final int PAGE_STARTED    = 0x1;
-            private final int PAGE_REDIRECTED = 0x2;
+        mWebView.setWebViewClient(new CustomWebClient(this));
 
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String urlNewString) {
-                webViewPreviousState = PAGE_REDIRECTED;
-                mWebView.loadUrl(urlNewString);
-                return true;
-            }
-
-            @Override
-            public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                super.onPageStarted(view, url, favicon);
-                webViewPreviousState = PAGE_STARTED;
-
-                Language language = Settings.shared.getCurrentLanguage(finalThis);
-                Site site = Settings.shared.getCurrentSite(finalThis);
-
-                Settings.shared.setLastVisitedURL(finalThis, language, site, url);
-                mProgressBar.setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            public void onPageFinished(WebView view, String url) {
-                mProgressBar.setVisibility(View.INVISIBLE);
-                if(shouldClearHistoryOnLoad){
-                    shouldClearHistoryOnLoad = false;
-                    mWebView.clearHistory();
-                }
-
-                if (historyBackButton != null) {
-                    historyBackButton.setEnabled(mWebView.canGoBack());
-                    historyBackButton.getIcon().setAlpha(mWebView.canGoBack() ? 255 : 100);
-                }
-                if (historyForwardButton != null) {
-                    historyForwardButton.setEnabled(mWebView.canGoForward());
-                    historyForwardButton.getIcon().setAlpha(mWebView.canGoForward() ? 255 : 100);
-                }
-
-                if (webViewPreviousState == PAGE_STARTED) {
-                    final String clickEvent = "document.body.addEventListener('click', function(event){  " +
-                            "  var target = event.target || event.srcElement; " +
-                            "  if ((target.tagName === 'A') || (target.tagName === 'a')) { " +
-                            //  "    console.log('DBG did tap link' + JSON.stringify(target)); " +
-                            "    event.preventDefault(); javascriptBridge.handleLink(target.getAttribute('href'), target.innerHTML); " +
-                            "    return false; " +
-                            "  } " +
-                            "  else if ((target.tagName === 'h2') || (target.tagName === 'H2')) {" +
-                            "    if ((target.className != null) && (target.className.indexOf('collapsible-heading') >= 0)) { " +
-                            "      var expanded_ids = [];" +
-                            "      var divs = document.querySelectorAll('div[aria-expanded=\"true\"');" +
-                            "      var expanded_ids = Array.prototype.map.call(divs, function(div) { return div.id }); " +
-                            "      javascriptBridge.saveExpandedSections(JSON.stringify(expanded_ids));" +
-                            "    } " +
-                            "  }" +
-                            "}, false); ";
-
-                    final String dblclickEvent = "document.body.addEventListener('dblclick', function(event){ " +
-                    "  wr_wikiReaderWordLookup(true); " +
-			        "}, false); ";
-
-                    final String lookupFunction = "function wr_wikiReaderWordLookup(composite) { " +
-                            "  var s = window.getSelection();" +
-                            "  s.modify('extend','backward','word'); " +
-                            "  var rect1 = s.getRangeAt(0).getBoundingClientRect();" +
-                            "  var b = s.toString();" +
-                            "  s.modify('extend','forward','word');" +
-                            "  var a = s.toString();" +
-                            "  var rect2 = s.getRangeAt(0).getBoundingClientRect();" +
-                            "  s.modify('move','forward','character');" +
-                            "  var selectiondiv = document.getElementById('__wikireader_selectiondiv');" +
-                            "  if (selectiondiv == null) {" +
-                            "    selectiondiv = document.createElement('div');" +
-                            "    selectiondiv.setAttribute('id', '__wikireader_selectiondiv');" +
-                            "    selectiondiv.style.display='none'; document.body.appendChild(selectiondiv);" +
-                            "  }" +
-                            "  var rx=s.getRangeAt(0).getBoundingClientRect();" +
-                            "  var relative=document.body.parentNode.getBoundingClientRect();" +
-                            "  selectiondiv.style.top =(rx.bottom -relative.top)+'px';" +
-                            "  selectiondiv.style.right=-(rx.right-relative.right)+'px';" +
-                            "  selectiondiv.style.position='absolute';" +
-                            "  selectiondiv.style.borderTop = '3px solid #000000';" +
-                            "  selectiondiv.style.width = (rect1.width + rect2.width)+'px';" +
-                            "  if (composite) {" +
-                            "    javascriptBridge.lookupCompositeWord(b+a);" +
-                            "  }" +
-                            "  else {" +
-                            "    javascriptBridge.lookupWord(b+a);" +
-                            "  }" +
-                            "}";
-
-                    mWebView.evaluateJavascript(lookupFunction + clickEvent + dblclickEvent, null);
-                }
-
-            }
-        });
 
         mWebView.setWebChromeClient(new LoggingChromeClient());
 
@@ -263,5 +161,30 @@ public class BrowserActivity extends AppCompatActivity {
 
         super.onResume();
         mSideDrawer.setData();
+    }
+
+    @Override
+    public void onPageStarted(String url) {
+        Language language = Settings.shared.getCurrentLanguage(this);
+        Site site = Settings.shared.getCurrentSite(this);
+        Settings.shared.setLastVisitedURL(this, language, site, url);
+        mProgressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onPageFinished(String URL) {
+        mProgressBar.setVisibility(View.INVISIBLE);
+        if (historyBackButton != null) {
+            historyBackButton.setEnabled(mWebView.canGoBack());
+            historyBackButton.getIcon().setAlpha(mWebView.canGoBack() ? 255 : 100);
+        }
+        if (historyForwardButton != null) {
+            historyForwardButton.setEnabled(mWebView.canGoForward());
+            historyForwardButton.getIcon().setAlpha(mWebView.canGoForward() ? 255 : 100);
+        }
+        if(shouldClearHistoryOnLoad){
+            shouldClearHistoryOnLoad = false;
+            mWebView.clearHistory();
+        }
     }
 }
