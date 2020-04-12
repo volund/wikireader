@@ -34,7 +34,7 @@ public class BrowserActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         Settings.shared.defaultLanguages();
-
+        setTitle("");
         boolean isFirstRun = Storage.shared.isFreshInstall(this);
         if (isFirstRun) {
             Storage.shared.setLanguages(this, Settings.shared.defaultLanguages());
@@ -306,11 +306,11 @@ public class BrowserActivity extends AppCompatActivity {
         // #c0b1fa
         // #ece6ff
         if (Storage.shared.enabledLanguages(this).size() == 0) {
-            String html = "<html><body style='background: #ece6ff; text-align: center; color: #444; '><br><p>No content selected, try the settings<p></body></html>";
+            String html = "<html><body style='background: #ece6ff; text-align: center; color: #444; '><br><br><p>No content selected, try the settings<p></body></html>";
             mWebView.loadData(html, "text/html; charset=utf-8", "UTF-8");
         }
         else if (Settings.shared.getCurrentSite(this).equals(Site.BlankSite)) {
-            String html = "<html><body style='background: #ece6ff; text-align: center; color: #444;'><br><p>Select a website from the menu on the left.</p><p><strong>Double-tap a word</strong> to see the dictionary definition</p></body></html>";
+            String html = "<html><body style='background: #ece6ff; text-align: center; color: #444;'><br><br><p>Select a website from the menu on the left.</p><p><strong>Double-tap a word</strong> to see the dictionary definition</p></body></html>";
             mWebView.loadData(html, "text/html; charset=utf-8", "UTF-8");
         }
 
