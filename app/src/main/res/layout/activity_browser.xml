@@ -29,7 +29,7 @@
 
         </android.support.design.widget.AppBarLayout>
 
-        <include layout="@layout/content_browser" />
+        <include layout="@layout/web_browser" />
 
     </android.support.design.widget.CoordinatorLayout>
 

@@ -5,19 +5,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.CheckBox;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import com.putskul_productions.wikireader.R;
 
 import java.util.List;
 
@@ -70,7 +65,7 @@ public class MenuItemsAdapter extends BaseAdapter {
         if (convertView==null){
 
             LayoutInflater inflater = ((Activity) mContext).getLayoutInflater();
-            convertView = inflater.inflate(R.layout.layout_left_menu_item, parent, false);
+            convertView = inflater.inflate(R.layout.side_drawer_item, parent, false);
             holder = new MenuItemHolder(convertView);
             convertView.setTag(holder);
 

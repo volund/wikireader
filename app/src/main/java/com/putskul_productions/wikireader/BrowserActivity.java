@@ -23,11 +23,11 @@ import android.widget.ProgressBar;
 public class BrowserActivity extends AppCompatActivity {
     protected SimpleLeftMenuView mLeftMenuView;
     protected DrawerLayout mDrawerLayout;
+    MenuItem historyBackButton;
+    MenuItem historyForwardButton;
     WebView mWebView = null;
     ProgressBar mProgressBar;
     boolean shouldClearHistoryOnLoad = false;
-    MenuItem historyBackButton;
-    MenuItem historyForwardButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

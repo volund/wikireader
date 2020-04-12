@@ -51,7 +51,7 @@ public class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.SitesVie
     public SitesViewHolder onCreateViewHolder(ViewGroup parent,
                                               int viewType) {
         LinearLayout layout = (LinearLayout)  LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.sites_item_view, parent, false);
+                .inflate(R.layout.content_item_view, parent, false);
         SitesViewHolder vh = new SitesViewHolder(layout);
         return vh;
     }

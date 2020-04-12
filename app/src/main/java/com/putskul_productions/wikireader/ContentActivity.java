@@ -7,14 +7,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import java.util.List;
-import java.util.Set;
 
 
 public class ContentActivity extends AppCompatActivity implements ContentAdapter.OnClickSiteListener {
@@ -26,7 +24,7 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTitle("Content");
-        setContentView(R.layout.activity_sites);
+        setContentView(R.layout.content_activity);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mRecyclerView = (RecyclerView) findViewById(R.id.sitesRecyclerView);
