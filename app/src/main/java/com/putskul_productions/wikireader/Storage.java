@@ -52,7 +52,9 @@ public class Storage {
 
     public List<Language> getLanguages(Context context) {
         List<Language> languages = backend.getListValue(context, "languages", new TypeToken<ArrayList<Language>>(){});
-        //Collections.sort(languages);
+        if (languages == null) {
+            return new ArrayList<Language>();
+        }
         for (Language lang : languages) {
             Collections.sort(lang.sites);
         }

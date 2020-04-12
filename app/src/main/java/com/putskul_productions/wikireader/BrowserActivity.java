@@ -1,13 +1,11 @@
 package com.putskul_productions.wikireader;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,8 +13,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.ProgressBar;
 
-
-public class BrowserActivity extends AppCompatActivity implements CustomWebClient.WebClientListener {
+public class BrowserActivity extends AppCompatActivity implements CustomWebClient.WebClientListener, OnClickMenu {
     String no_content_html = "<html><body style='background: #ece6ff; text-align: center; color: #444; '><br><br><p>No content selected, try the settings<p></body></html>";
     String no_site_selected_html = "<html><body style='background: #ece6ff; text-align: center; color: #444;'><br><br><p>Select a website from the menu on the left.</p><p><strong>Double-tap a word</strong> to see the dictionary definition</p></body></html>";
 
@@ -31,60 +28,48 @@ public class BrowserActivity extends AppCompatActivity implements CustomWebClien
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        Settings.shared.defaultLanguages();
-        setTitle("");
-        boolean isFirstRun = Storage.shared.isFreshInstall(this);
-        if (isFirstRun) {
-            Storage.shared.setLanguages(this, Settings.shared.defaultLanguages());
-            Storage.shared.setIsFreshInstall(this, false);
-            showLanguageSelectionActivity();
-        }
-
         setContentView(R.layout.activity_browser);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_language_black_24dp);// set drawable icon
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mWebView = findViewById(R.id.webview);
         mProgressBar = findViewById(R.id.webProgressBar);
         mProgressBar.setVisibility(View.INVISIBLE);
         mSideDrawer = findViewById(R.id.navigation_view);
         mDrawerLayout = findViewById(R.id.drawerLayout);
 
-        final Context context = this;
-        mSideDrawer.setmListener(new OnClickMenu() {
-            @Override
-            public void onClick(Language language, Site site) {
-                Settings.shared.setCurrentLanguage(context, language);
-                Settings.shared.setCurrentSite(context, site);
-                /*
-                Log.e("WIKIREADER", "loading last URL: [" + site.lastVisitedURL + "] for site [" + site.address +"]");*/
-                String url = Settings.shared.lastVisitedURL(context, language, site);
-                shouldClearHistoryOnLoad = true;
-                mWebView.loadUrl(url);
-                closeDrawer(null);
-            }
-        });
+        mSideDrawer.setListener(this);
+        configureToolbar();
+        configureWebView();
+        loadLanguagesOrLastUrl();
+    }
 
-        final BrowserActivity finalThis = this;
-
-        WebSettings webViewSettings = mWebView.getSettings();
-        webViewSettings.setJavaScriptEnabled(true);
-        webViewSettings.setDefaultFontSize(21);
-        mWebView.addJavascriptInterface(new JavascriptBridge(this), "javascriptBridge");
-
-        mWebView.setWebViewClient(new CustomWebClient(this));
-
-
-        mWebView.setWebChromeClient(new LoggingChromeClient());
-
-        if (!isFirstRun) {
+    void loadLanguagesOrLastUrl() {
+        if (Storage.shared.isFreshInstall(this)) {
+            Storage.shared.setLanguages(this, Settings.shared.defaultLanguages());
+            Storage.shared.setIsFreshInstall(this, false);
+            showActivity(ContentActivity.class);
+        }
+        else {
             Language language = Settings.shared.getCurrentLanguage(this);
             Site site = Settings.shared.getCurrentSite(this);
             String url = Settings.shared.lastVisitedURL(this, language, site);
             mWebView.loadUrl(url);
         }
+    }
+
+    void configureWebView() {
+        WebSettings webViewSettings = mWebView.getSettings();
+        webViewSettings.setJavaScriptEnabled(true);
+        webViewSettings.setDefaultFontSize(21);
+        mWebView.addJavascriptInterface(new JavascriptBridge(this), "javascriptBridge");
+        mWebView.setWebViewClient(new CustomWebClient(this));
+        mWebView.setWebChromeClient(new LoggingChromeClient());
+    }
+
+    void configureToolbar() {
+        setTitle("");
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_language_black_24dp);// set drawable icon
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
@@ -98,58 +83,36 @@ public class BrowserActivity extends AppCompatActivity implements CustomWebClien
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-
         if (id == android.R.id.home) {
-            openDrawer();
+            mDrawerLayout.openDrawer(GravityCompat.START);
         }
         else if (id == R.id.HomeButton) {
             mWebView.loadUrl(Settings.shared.getCurrentSite(this).address);
         }
-        else if (id == R.id.action_back) {
-            if (mWebView.canGoBack()) {
-                mWebView.goBack();
-            }
-            return true;
+        else if ((id == R.id.action_back) && mWebView.canGoBack()) {
+            mWebView.goBack();
         }
-        else if (id == R.id.action_forward) {
-            if (mWebView.canGoForward()) {
-                mWebView.goForward();
-            }
-            return true;
+        else if ((id == R.id.action_forward) && mWebView.canGoForward())  {
+            mWebView.goForward();
         }
         else if (id == R.id.action_settings) {
-            showSettingsActivity();
+            showActivity(SettingsActivity.class);
         }
         return super.onOptionsItemSelected(item);
     }
 
-    void showSettingsActivity() {
-        Intent intent = new Intent(this, SettingsActivity.class);
-        startActivity(intent);
-    }
-
-    void showLanguageSelectionActivity() {
-        Intent intent = new Intent(this, ContentActivity.class);
+    void showActivity(Class klass) {
+        Intent intent = new Intent(this, klass);
         startActivity(intent);
     }
 
     @Override
     public void onBackPressed() {
-        if((mDrawerLayout) != null && (mDrawerLayout.isDrawerOpen(GravityCompat.START)))
-            closeDrawer(null);
+        if ((mDrawerLayout) != null && (mDrawerLayout.isDrawerOpen(GravityCompat.START)))
+            mDrawerLayout.closeDrawers();
         else {
             super.onBackPressed();
         }
-    }
-
-    public void closeDrawer(DrawerLayout.DrawerListener listener) {
-        mDrawerLayout.setDrawerListener(listener);
-        mDrawerLayout.closeDrawers();
-    }
-
-    public void openDrawer() {
-        mDrawerLayout.setDrawerListener(null);
-        mDrawerLayout.openDrawer(GravityCompat.START);
     }
 
     @Override
@@ -191,5 +154,16 @@ public class BrowserActivity extends AppCompatActivity implements CustomWebClien
             shouldClearHistoryOnLoad = false;
             mWebView.clearHistory();
         }
+    }
+
+    // SideDrawerListener
+    @Override
+    public void onClick(Language language, Site site) {
+        Settings.shared.setCurrentLanguage(this, language);
+        Settings.shared.setCurrentSite(this, site);
+        String url = Settings.shared.lastVisitedURL(this, language, site);
+        shouldClearHistoryOnLoad = true;
+        mWebView.loadUrl(url);
+        mDrawerLayout.closeDrawers();
     }
 }

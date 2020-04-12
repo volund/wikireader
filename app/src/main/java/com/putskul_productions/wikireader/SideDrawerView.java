@@ -63,7 +63,7 @@ public class SideDrawerView extends NavigationView {
     }
 
 
-    public void setmListener(OnClickMenu mListener) {
+    public void setListener(OnClickMenu mListener) {
         this.mListener = mListener;
     }
 

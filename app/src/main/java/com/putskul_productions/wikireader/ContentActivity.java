@@ -28,27 +28,20 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mRecyclerView = (RecyclerView) findViewById(R.id.sitesRecyclerView);
-
-        // use this setting to improve performance if you know that changes
-        // in content do not change the layout size of the RecyclerView
         mRecyclerView.setHasFixedSize(true);
-
-        // use a linear layout manager
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(layoutManager);
 
-        // specify an adapter (see also next example)
         List<Language> languages = Storage.shared.getLanguages(this);
         mAdapter = new ContentAdapter(languages, this);
         mRecyclerView.setAdapter(mAdapter);
 
-        if (Storage.shared.enabledLanguages(this).size() == 0) {
+        if (!Storage.shared.hasEnabledLanguages(this)) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage("Welcome to Wikireader!\n\nTap the checkbox on the left for each language you wish to read, then select the dictionary for use with that language");
             builder.setPositiveButton("Ok", null);
             builder.show();
         }
-
     }
 
     @Override
@@ -59,7 +52,6 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
         return super.onCreateOptionsMenu(menu);
     }
 
-    // handle button activities
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -110,25 +102,14 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
 
     }
 
-    public void onClick(final Site site) {
-        final Context context = this;
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Really delete?");
-        builder.setIcon(android.R.drawable.ic_dialog_alert);
-        builder.setNegativeButton("Cancel", null);
-        builder.show();
-    }
-
     public void onToggleLanguageEnabled(Language language) {
         language.enabled = !language.enabled;
         Storage.shared.updateLanguage(this, language);
         if (language.enabled) {
             showDictionarySelectionDialog(language);
         }
-        else {
-            if (language.sites.contains(Settings.shared.getCurrentSite(this))) {
-                Settings.shared.setCurrentSite(this, Site.BlankSite);
-            }
+        else if (language.sites.contains(Settings.shared.getCurrentSite(this))) {
+            Settings.shared.setCurrentSite(this, Site.BlankSite);
         }
     }
 
@@ -157,32 +138,17 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
         });
         builder.show();
     }
-    void showPromptDialog(String title, EditText input, DialogInterface.OnClickListener okListener) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(title);
-        builder.setView(input);
-        builder.setPositiveButton("OK", okListener);
-        builder.show();
-    }
 
     @Override
     public void onDelete(final Language lang, final Site site) {
-        final boolean deleteLanguage = site == null;
-        String msg = deleteLanguage ? "Really delete '" + lang.label + "'? All sites for this language will be lost" : "Really delete '" + site.label + "'";
-
         final Context context = this;
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(msg);
+        builder.setTitle("Really delete '" + site.label + "'");
         builder.setIcon(android.R.drawable.ic_dialog_alert);
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-                if (deleteLanguage) {
-                    Storage.shared.removeLanguage(context, lang);
-                }
-                else {
-                    lang.sites.remove(site);
-                    Storage.shared.updateLanguage(context, lang);
-                }
+                lang.sites.remove(site);
+                Storage.shared.updateLanguage(context, lang);
                 refreshData();
             }
         });
@@ -192,14 +158,8 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
 
     @Override
     public void onSelectionChanged(Language language) {
-        if (language != null) {
-            setTitle(language.label);
-            addItemButton.setVisible(true);
-        }
-        else {
-            setTitle("Content");
-            addItemButton.setVisible(false);
-        }
+        setTitle(language != null ? language.label : "Content");
+        addItemButton.setVisible(language != null);
     }
 
 
