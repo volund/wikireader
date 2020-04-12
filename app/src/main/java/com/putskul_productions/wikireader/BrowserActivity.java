@@ -17,7 +17,6 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import java.util.Set;
 
 
 public class BrowserActivity extends AppCompatActivity {
@@ -44,11 +43,8 @@ public class BrowserActivity extends AppCompatActivity {
         setContentView(R.layout.activity_browser);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        //getSupportActionBar().setHomeButtonEnabled(true);
-        //getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_language_black_24dp);// set drawable icon
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        //getSupportActionBar().setIcon(R.drawable.ic_language_black_24dp);
         mWebView = findViewById(R.id.webview);
         mLeftMenuView = findViewById(R.id.navigation_view);
         mDrawerLayout = findViewById(R.id.drawerLayout);
@@ -63,8 +59,6 @@ public class BrowserActivity extends AppCompatActivity {
                 /*
                 Log.e("WIKIREADER", "loading last URL: [" + site.lastVisitedURL + "] for site [" + site.address +"]");*/
                 String url = Settings.shared.lastVisitedURL(context, language, site);
-                Log.e("WIKIREADER", "DBG loading last URL: [" + url + "] for site [" + language.label + "-" + site.label +"]");
-                Log.e("WIKIREADER", "DBG did clear history ");
                 shouldClearHistoryOnLoad = true;
                 mWebView.loadUrl(url);
                 closeDrawer(null);
@@ -97,7 +91,7 @@ public class BrowserActivity extends AppCompatActivity {
 
                 Language language = Settings.shared.getCurrentLanguage(finalThis);
                 Site site = Settings.shared.getCurrentSite(finalThis);
-                
+
                 Settings.shared.setLastVisitedURL(finalThis, language, site, url);
             }
 
@@ -254,13 +248,10 @@ public class BrowserActivity extends AppCompatActivity {
             openDrawer();
         }
         else if (id == R.id.HomeButton) {
-            Log.e("WIKIREADER", "DBG A going home");
             mWebView.loadUrl(Settings.shared.getCurrentSite(this).address);
         }
         else if (id == R.id.action_back) {
-            Log.e("WIKIREADER", "DBG back pressed");
             if (mWebView.canGoBack()) {
-                Log.e("WIKIREADER", "DBG going back in webview");
                 mWebView.goBack();
             }
             return true;
@@ -305,6 +296,15 @@ public class BrowserActivity extends AppCompatActivity {
 
     @Override
     public void onResume(){
+        if (Storage.shared.enabledLanguages(this).size() == 0) {
+            String html = "<html><body>No content selected, try the settings!</body></html>";
+            mWebView.loadData(html, "text/html; charset=utf-8", "UTF-8");
+        }
+        else if (Settings.shared.getCurrentSite(this).equals(Site.BlankSite)) {
+            String html = "<html><body>Select a language from the menu on the left</body></html>";
+            mWebView.loadData(html, "text/html; charset=utf-8", "UTF-8");
+        }
+
         super.onResume();
         mLeftMenuView.setData();
     }

@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import java.util.List;
+import java.util.Set;
 
 
 public class ContentActivity extends AppCompatActivity implements ContentAdapter.OnClickSiteListener {
@@ -54,8 +55,6 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // R.menu.mymenu is a reference to an xml file named mymenu.xml which should be inside your res/menu directory.
-        // If you don't have res/menu, just create a directory named "menu" inside res
         getMenuInflater().inflate(R.menu.sites_menu, menu);
         addItemButton = menu.findItem(R.id.addButton);
         addItemButton.setVisible(false);
@@ -67,33 +66,12 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.addButton) {
-            if (mAdapter.currentLanguage == null) {
-                showAddLanguageDialog();
-            }
-            else {
-                showAddSiteDialogs();
-            }
+            showAddSiteDialogs();
         }
         else {
             onBackPressed();
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    void showAddLanguageDialog() {
-        final Context context = this;
-        final EditText input = new EditText(this);
-        showPromptDialog("New language", input, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                final String label = input.getText().toString();
-                if (!label.trim().equals("")) {
-                    Language newLanguage = new Language(label);
-                    Storage.shared.addLanguage(context, newLanguage);
-                    refreshData();
-                }
-            }
-        });
     }
 
     void showAddSiteDialogs() {
@@ -149,7 +127,11 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
         if (language.enabled) {
             showDictionarySelectionDialog(language);
         }
-        //refreshData();
+        else {
+            if (language.sites.contains(Settings.shared.getCurrentSite(this))) {
+                Settings.shared.setCurrentSite(this, Site.BlankSite);
+            }
+        }
     }
 
     void refreshData() {
@@ -158,14 +140,10 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
     }
 
     void showDictionarySelectionDialog(final Language language) {
-        for (StackTraceElement ste : Thread.currentThread().getStackTrace()) {
-            Log.e("WIKIREADER", "DBG C " + ste);
-        }
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Select dictionary (" + language.label + ")");
         final Context context = this;
         String[] dictionaries = new String[language.dictionaries.size()];
-        Log.e("WIKIREADER", "found [" + language.dictionaries.size() + "] dictionaries");
         int i = 0;
         for (Dictionary dict : language.dictionaries) {
             dictionaries[i] = dict.name;

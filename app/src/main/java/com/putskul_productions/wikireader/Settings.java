@@ -52,7 +52,7 @@ public class Settings {
                 return site;
             }
         }
-        return currentLanguage.sites.size() > 0 ? currentLanguage.sites.get(0) : Site.BlankSite;
+        return Site.BlankSite;
     }
 
     public void setCurrentSite(Context context, Site site) {
