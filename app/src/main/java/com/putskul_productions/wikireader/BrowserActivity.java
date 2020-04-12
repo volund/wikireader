@@ -11,18 +11,20 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.webkit.ConsoleMessage;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-
+import android.widget.ProgressBar;
 
 
 public class BrowserActivity extends AppCompatActivity {
     protected SimpleLeftMenuView mLeftMenuView;
     protected DrawerLayout mDrawerLayout;
     WebView mWebView = null;
+    ProgressBar mProgressBar;
     boolean shouldClearHistoryOnLoad = false;
     MenuItem historyBackButton;
     MenuItem historyForwardButton;
@@ -46,6 +48,8 @@ public class BrowserActivity extends AppCompatActivity {
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_language_black_24dp);// set drawable icon
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mWebView = findViewById(R.id.webview);
+        mProgressBar = findViewById(R.id.webProgressBar);
+        mProgressBar.setVisibility(View.INVISIBLE);
         mLeftMenuView = findViewById(R.id.navigation_view);
         mDrawerLayout = findViewById(R.id.drawerLayout);
 
@@ -93,11 +97,13 @@ public class BrowserActivity extends AppCompatActivity {
                 Site site = Settings.shared.getCurrentSite(finalThis);
 
                 Settings.shared.setLastVisitedURL(finalThis, language, site, url);
+
+                mProgressBar.setVisibility(View.VISIBLE);
             }
 
             @Override
             public void onPageFinished(WebView view, String url) {
-
+                mProgressBar.setVisibility(View.INVISIBLE);
                 if(shouldClearHistoryOnLoad){
                     shouldClearHistoryOnLoad = false;
                     mWebView.clearHistory();
