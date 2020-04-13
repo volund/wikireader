@@ -19,29 +19,27 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
     RecyclerView mRecyclerView;
     ContentAdapter mAdapter;
     MenuItem addItemButton;
+    Dialogs dialogs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTitle("Content");
         setContentView(R.layout.content_activity);
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mRecyclerView = (RecyclerView) findViewById(R.id.sitesRecyclerView);
-        mRecyclerView.setHasFixedSize(true);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        mRecyclerView.setLayoutManager(layoutManager);
 
+        dialogs = new Dialogs(this);
+        setUpRecyclerView();
+        showGreetingIfNecessary();
+    }
+
+    void setUpRecyclerView() {
         List<Language> languages = Storage.shared.getLanguages(this);
         mAdapter = new ContentAdapter(languages, this);
+        mRecyclerView = (RecyclerView) findViewById(R.id.sitesRecyclerView);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setAdapter(mAdapter);
-
-        if (!Storage.shared.hasEnabledLanguages(this)) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage("Welcome to Wikireader!\n\nTap the checkbox on the left for each language you wish to read, then select the dictionary for use with that language");
-            builder.setPositiveButton("Ok", null);
-            builder.show();
-        }
     }
 
     @Override
@@ -65,41 +63,22 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
     }
 
     void showAddSiteDialogs() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("New site");
-
         final Context context = this;
-
-        LinearLayout layout = new LinearLayout(this);
-        layout.setOrientation(LinearLayout.VERTICAL);
-        final EditText labelInput = new EditText(this);
-        final EditText addressInput = new EditText(this);
-        labelInput.setHint("Label");
-        addressInput.setHint("Address");
-        layout.addView(labelInput);
-        layout.addView(addressInput);
-
-        builder.setView(layout);
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        dialogs.showDoubleInputDialog("New Site", "Label", "Address", new Dialogs.DoubleInputListener(){
             @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                String label = labelInput.getText().toString().trim();
-                String address = addressInput.getText().toString().trim();
-
+            public void onOk(String address, String label) {
+                address = address.trim();
                 if (!address.startsWith("http")) {
                     address = "http://" + address;
                 }
                 if (!label.trim().equals("")) {
-                    Site newSite = new Site(label, address);
+                    Site newSite = new Site(label.trim(), address);
                     mAdapter.currentLanguage.sites.add(newSite);
                     Storage.shared.updateLanguage(context, mAdapter.currentLanguage);
                     refreshData();
                 }
             }
         });
-        builder.setNegativeButton("Cancel", null);
-        builder.show();
-
     }
 
     public void onToggleLanguageEnabled(Language language) {
@@ -119,41 +98,29 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
     }
 
     void showDictionarySelectionDialog(final Language language) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Select dictionary (" + language.label + ")");
         final Context context = this;
-        String[] dictionaries = new String[language.dictionaries.size()];
-        int i = 0;
-        for (Dictionary dict : language.dictionaries) {
-            dictionaries[i] = dict.name;
-            i += 1;
-        }
-        builder.setItems(dictionaries, new DialogInterface.OnClickListener() {
+        String title = "Select dictionary (" + language.label + ")";
+        dialogs.showListSelection(title, language.dictionariesStringArray(), new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                language.currentDictionary = language.dictionaries.get(i);
+            public void onClick(DialogInterface dialog, int which) {
+                language.currentDictionary = language.dictionaries.get(which);
                 Storage.shared.updateLanguage(context, language);
                 refreshData();
             }
         });
-        builder.show();
     }
 
     @Override
-    public void onDelete(final Language lang, final Site site) {
+    public void onDelete(final Language language, final Site site) {
         final Context context = this;
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Really delete '" + site.label + "'");
-        builder.setIcon(android.R.drawable.ic_dialog_alert);
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        int icon = android.R.drawable.ic_dialog_alert;
+        dialogs.showOkCancelDialog("Really delete '" + site.label + "'", icon, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-                lang.sites.remove(site);
-                Storage.shared.updateLanguage(context, lang);
+                language.sites.remove(site);
+                Storage.shared.updateLanguage(context, language);
                 refreshData();
             }
         });
-        builder.setNegativeButton("Cancel", null);
-        builder.show();
     }
 
     @Override
@@ -161,7 +128,6 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
         setTitle(language != null ? language.label : "Content");
         addItemButton.setVisible(language != null);
     }
-
 
     @Override
     public void onBackPressed() {
@@ -172,6 +138,12 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
         }
         else {
             finish();
+        }
+    }
+
+    void showGreetingIfNecessary() {
+        if (!Storage.shared.hasEnabledLanguages(this)) {
+            dialogs.showOkDialog("Welcome to Wikireader!\n\nTap the checkbox on the left for each language you wish to read, then select the dictionary for use with that language");
         }
     }
 }

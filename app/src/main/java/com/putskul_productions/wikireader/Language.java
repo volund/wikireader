@@ -21,6 +21,16 @@ public class Language implements Comparable {
         currentDictionary = Dictionary.BlankDictionary;
     }
 
+    String[] dictionariesStringArray() {
+        String[] strs = new String[dictionaries.size()];
+        int i = 0;
+        for (Dictionary dict : dictionaries) {
+            strs[i] = dict.name;
+            i += 1;
+        }
+        return strs;
+    }
+
     public boolean equals(Object obj) {
         if (obj instanceof Language == false) {
             return false;
