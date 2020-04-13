@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 public class BrowserActivity extends AppCompatActivity implements CustomWebClient.WebClientListener, OnClickMenu {
@@ -22,7 +23,7 @@ public class BrowserActivity extends AppCompatActivity implements CustomWebClien
     MenuItem historyBackButton;
     MenuItem historyForwardButton;
     WebView mWebView = null;
-    ProgressBar mProgressBar;
+    LinearLayout mProgressBar;
     boolean shouldClearHistoryOnLoad = false;
 
     @Override
@@ -31,7 +32,6 @@ public class BrowserActivity extends AppCompatActivity implements CustomWebClien
         setContentView(R.layout.activity_browser);
         mWebView = findViewById(R.id.webview);
         mProgressBar = findViewById(R.id.webProgressBar);
-        mProgressBar.setVisibility(View.INVISIBLE);
         mSideDrawer = findViewById(R.id.navigation_view);
         mDrawerLayout = findViewById(R.id.drawerLayout);
 
