@@ -17,29 +17,11 @@ import java.util.List;
 public class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.SitesViewHolder> {
     private List<Language> languages;
     public Language currentLanguage;
-    private OnClickSiteListener mOnClickSiteListener;
+    private OnClickContentListener mOnClickContentListener;
 
-    public static class SitesViewHolder extends RecyclerView.ViewHolder {
-        public CheckBox enabledCheckbox;
-        public LinearLayout layout;
-        public TextView label;
-        public TextView subLabel;
-        ImageView editIcon;
-        ImageView deleteIcon;
-        public SitesViewHolder(LinearLayout v) {
-            super(v);
-            layout = v;
-            enabledCheckbox = itemView.findViewById(R.id.languageEnabled);
-            label = (TextView)layout.findViewById(R.id.siteLabelTextView);
-            subLabel = (TextView)layout.findViewById(R.id.siteSubLabelTextView);
-            deleteIcon = itemView.findViewById(R.id.deleteIcon);
-            editIcon = itemView.findViewById(R.id.editIcon);
-        }
-    }
-
-    public ContentAdapter(List<Language> myDataset, OnClickSiteListener pListener) {
+    public ContentAdapter(List<Language> myDataset, OnClickContentListener pListener) {
         languages = myDataset;
-        mOnClickSiteListener = pListener;
+        mOnClickContentListener = pListener;
     }
 
     void updateData(List<Language> pLanguages) {
@@ -62,39 +44,28 @@ public class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.SitesVie
         if (currentLanguage == null) {
             final Language language = languages.get(position);
             holder.label.setText(language.label);
-            holder.subLabel.setText(language.currentDictionary.name);
-            holder.editIcon.setVisibility(View.GONE);
             holder.deleteIcon.setVisibility(View.GONE);
-            holder.enabledCheckbox.setVisibility(View.VISIBLE);
-
+            holder.subLabel.setText(language.currentDictionary.name);
             holder.enabledCheckbox.setOnCheckedChangeListener(null);
+            holder.enabledCheckbox.setVisibility(View.VISIBLE);
             holder.enabledCheckbox.setChecked(language.enabled);
 
             holder.enabledCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                    mOnClickSiteListener.onToggleLanguageEnabled(language);
+                    mOnClickContentListener.onToggleLanguageEnabled(language);
                 }
             });
 
             holder.layout.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View view, MotionEvent motionEvent) {
-                    switch (motionEvent.getActionMasked()) {
-                        case MotionEvent.ACTION_UP:
-                            mOnClickSiteListener.onSelectionChanged(language);
+                    if (motionEvent.getActionMasked() == MotionEvent.ACTION_UP) {
+                            mOnClickContentListener.onSelectionChanged(language);
                             currentLanguage = language;
                             notifyDataSetChanged();
-                        default:
                     }
                     return true;
-                }
-            });
-
-            holder.deleteIcon.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    mOnClickSiteListener.onDelete(language, null);
                 }
             });
         }
@@ -102,45 +73,43 @@ public class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.SitesVie
             final Site site = currentLanguage.sites.get(position);
             holder.label.setText(site.label);
             holder.subLabel.setText(site.address);
-            holder.editIcon.setVisibility(View.GONE);
             holder.deleteIcon.setVisibility(View.VISIBLE);
-
             holder.enabledCheckbox.setVisibility(View.GONE);
-
             holder.deleteIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mOnClickSiteListener.onDelete(currentLanguage, site);
+                    mOnClickContentListener.onDelete(currentLanguage, site);
                 }
             });
             holder.layout.setOnTouchListener(null);
-            /*
-            holder.layout.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View view, MotionEvent motionEvent) {
-                    switch (motionEvent.getActionMasked()) {
-                        case MotionEvent.ACTION_DOWN:
-                            mOnClickSiteListener.onClick(site);
-                        default:
-                    }
-                    return true;
-                }
-            });*/
         }
     }
 
     @Override
     public int getItemCount() {
-        if (currentLanguage == null) {
-            return languages.size();
-        }
-        return currentLanguage.sites.size();
+        return currentLanguage == null ? languages.size() : currentLanguage.sites.size();
     }
 
-
-    public interface OnClickSiteListener {
+    public interface OnClickContentListener {
         void onDelete(Language lang, Site site);
         void onSelectionChanged(Language lang);
         void onToggleLanguageEnabled(Language lang);
+    }
+
+    public static class SitesViewHolder extends RecyclerView.ViewHolder {
+        public CheckBox enabledCheckbox;
+        public LinearLayout layout;
+        public TextView label;
+        public TextView subLabel;
+        ImageView deleteIcon;
+
+        public SitesViewHolder(LinearLayout v) {
+            super(v);
+            layout = v;
+            enabledCheckbox = itemView.findViewById(R.id.languageEnabled);
+            label = layout.findViewById(R.id.siteLabelTextView);
+            subLabel = layout.findViewById(R.id.siteSubLabelTextView);
+            deleteIcon = itemView.findViewById(R.id.deleteIcon);
+        }
     }
 }

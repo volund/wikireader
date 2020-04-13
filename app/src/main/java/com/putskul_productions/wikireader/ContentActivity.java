@@ -1,6 +1,5 @@
 package com.putskul_productions.wikireader;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.support.v7.app.AppCompatActivity;
@@ -9,13 +8,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.EditText;
-import android.widget.LinearLayout;
 
 import java.util.List;
 
 
-public class ContentActivity extends AppCompatActivity implements ContentAdapter.OnClickSiteListener {
+public class ContentActivity extends AppCompatActivity implements ContentAdapter.OnClickContentListener {
     RecyclerView mRecyclerView;
     ContentAdapter mAdapter;
     MenuItem addItemButton;
