@@ -63,14 +63,6 @@ public class Settings {
         return getCurrentSite(context).equals(Site.BlankSite);
     }
 
-    public void setExpandedSections(Context context, String expandedSections) {
-        storage.setStringValue(context, "expanded-sections", expandedSections);
-    }
-
-    public String getExpandedSections(Context context) {
-        return storage.stringValue(context, "expanded-sections", "[]");
-    }
-
     public List<Language> defaultLanguages() {
         Map<String, Language> languageMap = new HashMap<>();
         for (String key : wordreference.sourceLocales()) {
@@ -115,8 +107,7 @@ public class Settings {
         languages.add(languageMap.get("ZH"));
         languages.add(languageMap.get("JA"));
         languages.add(languageMap.get("KO"));
-
-
+        
         return languages;
     }
 }

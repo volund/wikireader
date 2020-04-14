@@ -8,8 +8,6 @@ import android.view.View;
 import android.widget.Button;
 
 public class SettingsActivity extends AppCompatActivity {
-
-    //Button mDictionaryButton;
     Button mSitesButton;
 
     @Override
@@ -20,7 +18,7 @@ public class SettingsActivity extends AppCompatActivity {
         setTitle("Settings");
 
         final Context context = this;
-        mSitesButton = (Button)findViewById(R.id.languagesAndSites);
+        mSitesButton = findViewById(R.id.languagesAndSites);
         mSitesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -28,37 +26,6 @@ public class SettingsActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
-        /*
-        mDictionaryButton = (Button)findViewById(R.id.dictionaryButton);
-        mDictionaryButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showDictionaryLanguageDialog();
-            }
-        });*/
-
-///        updateDictionaryButtonText();
     }
-
-    /*
-    void updateDictionaryButtonText() {
-        mDictionaryButton.setText("Dictionray: " + Settings.shared.dictionaryLanguage(this));
-    }
-
-    void showDictionaryLanguageDialog() {
-        final String[] dictLangs = Settings.shared.languageMap.get(Settings.shared.sourceLanguage(this));
-        final Context context = this;
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setItems(dictLangs, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String dictLang = dictLangs[which];
-                Settings.shared.setDictionaryLanguage(context, dictLang);
-                updateDictionaryButtonText();
-            }
-        });
-        builder.show();
-    }*/
 
 }
