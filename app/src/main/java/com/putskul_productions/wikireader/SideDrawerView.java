@@ -18,65 +18,31 @@ public class SideDrawerView extends NavigationView {
     private SideDrawerListener mListener;
     private ImageView mHeader;
 
-    public SideDrawerView(Context context) {
-        super(context);
-        mContext = context;
-        mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        initLayout();
-        setData();
-    }
-
     public SideDrawerView(Context context, AttributeSet attrs) {
         super(context, attrs);
         mContext = context;
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         initLayout();
-        setData();
-    }
-
-    public SideDrawerView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        mContext = context;
-        mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        initLayout();
-        setData();
+        loadData();
     }
 
     private void initLayout(){
         mInflater.inflate(R.layout.side_drawer, this);
-        mItemsList = (ListView) findViewById(R.id.menu_items_list);
-        mHeader = (ImageView) findViewById(R.id.header);
-        mHeader.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // do something
-            }
-        });
+        mItemsList = findViewById(R.id.menu_items_list);
+        mHeader = findViewById(R.id.header);
     }
-
 
     public void setListener(SideDrawerListener mListener) {
         this.mListener = mListener;
     }
 
-    void setData() {
-        List<Language> languages = Storage.shared.getLanguages(getContext());
+    void loadData() {
         List<Object> sections = new ArrayList<>();
-        for (Language language : languages) {
-            if (language.enabled) {
-                sections.add(language);
-                sections.addAll(language.sites);
-            }
+        for (Language language : Storage.shared.enabledLanguages(getContext())) {
+            sections.add(language);
+            sections.addAll(language.sites);
         }
-
-        mItemsAdapter = new SideDrawerAdapter(mContext, sections, new SideDrawerListener() {
-            @Override
-            public void onSideDrawerItemClick(Language language, Site site) {
-
-                if (mListener != null)
-                    mListener.onSideDrawerItemClick(language, site);
-            }
-        });
+        mItemsAdapter = new SideDrawerAdapter(mContext, sections, mListener);
         mItemsList.setAdapter(mItemsAdapter);
         mItemsAdapter.notifyDataSetChanged();
     }

@@ -127,7 +127,7 @@ public class BrowserActivity extends AppCompatActivity implements CustomWebClien
             mWebView.loadData(no_site_selected_html, "text/html; charset=utf-8", "UTF-8");
             mWebView.loadData(no_site_selected_html, "text/html; charset=utf-8", "UTF-8");
         }
-        mSideDrawer.setData();
+        mSideDrawer.loadData();
     }
 
     @Override
