@@ -15,46 +15,29 @@ import java.util.Arrays;
 import java.util.List;
 
 public class JavascriptBridge {
+    String lookup_script = "var selectiondiv = document.getElementById('__wikireader_selectiondiv'); selectiondiv.style.display='block'; setTimeout(function() { selectiondiv.style.display='none'; }, 100);";
     BrowserActivity mContext;
+    Dialogs dialogs;
 
-    /** Instantiate the interface and set the context */
     JavascriptBridge(BrowserActivity context) {
         mContext = context;
+        dialogs = new Dialogs(context);
     }
 
-    @JavascriptInterface
-    public void lookupWord(String word) {
-        String cleanWord = word;
-
-        String[] prefixes = {"L'", "l'", "D'", "d'", "C'", "c'", "Un'", "un'", "dell'", "Dell'", "Nell'", "nell'"};
-        for (String prefix : prefixes) {
-            if (word.startsWith(prefix)) {
-                cleanWord = word.replaceFirst(prefix, "");
-                break;
-            }
-        }
-
-        lookupWithoutCleaning(cleanWord);
-    }
-
-    public void lookupWithoutCleaning(final String word) {
+    public void lookup(final String word) {
         final BrowserActivity act = mContext;
-        final String lookupWord = word;
         final Runnable onDismiss = new Runnable() {
             @Override
             public void run() {
-                //act.mWebView.evaluateJavascript("var selectiondiv = document.getElementById('__wikireader_selectiondiv'); selectiondiv.style.filter = 'alpha(opacity=0)'; selectiondiv.style.display='block'; var op = 1; var timer = setInterval(function () {  if (op <= 0.1){    clearInterval(timer);    selectiondiv.style.display = 'none';  } selectiondiv.style.opacity = op; selectiondiv.style.filter = 'alpha(opacity=' + op * 100 + \")\"; op -= op * 0.1; }, 20);", null);
-                //act.mWebView.evaluateJavascript("var selectiondiv = document.getElementById('__wikireader_selectiondiv'); selectiondiv.style.display='block'; setTimeout(function() { selectiondiv.style.display='none'; setTimeout(function() { selectiondiv.style.display='block'; setTimeout(function() { selectiondiv.style.display='none'; }, 100); }, 100);}, 100);", null);
-                act.mWebView.evaluateJavascript("var selectiondiv = document.getElementById('__wikireader_selectiondiv'); selectiondiv.style.display='block'; setTimeout(function() { selectiondiv.style.display='none'; }, 100);", null);
+                act.mWebView.evaluateJavascript(lookup_script, null);
             }
         };
         mContext.runOnUiThread(new Runnable() {
-
             @Override
             public void run() {
                 Language language = Settings.shared.getCurrentLanguage(act);
                 Dictionary dictionary = language.currentDictionary;
-                String wordURL = dictionary.urlForWord(lookupWord);
+                String wordURL = dictionary.urlForWord(word);
                 LookupDialog lookupDialog = new LookupDialog(act, wordURL, onDismiss);
                 lookupDialog.show();
             }
@@ -64,54 +47,30 @@ public class JavascriptBridge {
     @JavascriptInterface
     public void lookupCompositeWord(String word) {
         if (word.contains("'")) {
-            ArrayList<String> options = new ArrayList<String>();
-            for (String op: word.split("'")) {
-                options.add(op);
-            }
-            String firstOp = options.remove(0);
-            options.add(word);
-            options.add(firstOp);
-
-            final String [] values = options.toArray(new String[options.size()]);
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-            builder.setItems(values, new DialogInterface.OnClickListener() {
+            final String[] values = StringUtils.splitToArrayAndAdd(word, "'", word);
+            dialogs.showListSelection("", values, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    lookupWithoutCleaning(values[which]);
+                    lookup(values[which]);
                 }
             });
-            builder.show();
-
         }
         else {
-            lookupWithoutCleaning(word);
+            lookup(word);
         }
     }
 
     @JavascriptInterface
-    public void handleLink(String address, String title) {
-        //Log.e("WIKIREADER", "Handling URL " + address + " for " + title);
-
-        ArrayList<String> options = new ArrayList<String>();
-        for (String op: title.split(" ")) {
-            options.add(op);
-        }
-        options.add("Follow '" + title + "'");
-
-        final String [] values = options.toArray(new String[options.size()]);
-
-        final String relativeHref = address;
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-        builder.setItems(values, new DialogInterface.OnClickListener() {
+    public void handleLink(final String relativeHref, String title) {
+        final String[] values = StringUtils.splitToArrayAndAdd(title, " ", "Follow '" + title + "'");
+        dialogs.showListSelection("", values, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
                 if (which < values.length - 1) {
-                    lookupWord(values[which]);
-                } else {
-                    //Log.e("WIKIREADER", "following " + relativeHref);
+                    dialog.dismiss();
+                    lookupCompositeWord(values[which]);
+                }
+                else {
                     mContext.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -121,14 +80,5 @@ public class JavascriptBridge {
                 }
             }
         });
-        builder.show();
     }
-
-    @JavascriptInterface
-    public void saveExpandedSections(String expandedSections) {
-        Log.e("WIKIREADER", "saving sections " + expandedSections);
-        Settings.shared.setExpandedSections(mContext, expandedSections);
-
-    }
-
 }

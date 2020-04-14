@@ -21,7 +21,7 @@ public class CustomWebClient extends WebViewClient {
             "document.body.addEventListener('click', function(event){\n" +
             "  var target = event.target || event.srcElement;\n" +
             "  if ((target.tagName === 'A') || (target.tagName === 'a')) {\n" +
-            "    console.log('DBG did tap link' + JSON.stringify(target));\n" +
+            //"    console.log('DBG did tap link' + JSON.stringify(target));\n" +
             "    event.preventDefault(); javascriptBridge.handleLink(target.getAttribute('href'), target.innerHTML);\n" +
             "    return false;\n" +
             "  }\n" +
@@ -36,10 +36,10 @@ public class CustomWebClient extends WebViewClient {
             "}, false);\n" +
             "\n" +
             "document.body.addEventListener('dblclick', function(event){\n" +
-            "  wr_wikiReaderWordLookup(true);\n" +
+            "  wr_wikiReaderWordLookup();\n" +
             "}, false);\n" +
             "\n" +
-            "function wr_wikiReaderWordLookup(composite) {\n" +
+            "function wr_wikiReaderWordLookup() {\n" +
             "  var s = window.getSelection();\n" +
             "  s.modify('extend','backward','word');\n" +
             "  var rect1 = s.getRangeAt(0).getBoundingClientRect();\n" +
@@ -61,12 +61,7 @@ public class CustomWebClient extends WebViewClient {
             "  selectiondiv.style.position='absolute';\n" +
             "  selectiondiv.style.borderTop = '3px solid #000000';\n" +
             "  selectiondiv.style.width = (rect1.width + rect2.width)+'px';\n" +
-            "  if (composite) {\n" +
-            "    javascriptBridge.lookupCompositeWord(b+a);\n" +
-            "  }\n" +
-            "  else {\n" +
-            "    javascriptBridge.lookupWord(b+a);\n" +
-            "  }\n" +
+            "  javascriptBridge.lookupCompositeWord(b+a);\n" +
             "}";
 
 
