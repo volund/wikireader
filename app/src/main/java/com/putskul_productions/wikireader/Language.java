@@ -11,12 +11,11 @@ public class Language implements Comparable {
     public List<Site> sites;
     public List<Dictionary> dictionaries;
     public Dictionary currentDictionary;
-    public String lastVisitedURL;
 
     public Language(String pLabel) {
         enabled = false;
         label = pLabel;
-        sites = new ArrayList<Site>();
+        sites = new ArrayList<>();
         dictionaries = new ArrayList<>();
         currentDictionary = Dictionary.BlankDictionary;
     }
@@ -47,6 +46,5 @@ public class Language implements Comparable {
         Language lang = (Language)obj;
         return label.compareTo(lang.label);
     }
-
     final static Language NoLanguage = new Language("None");
 }

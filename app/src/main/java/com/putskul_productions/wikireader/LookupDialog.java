@@ -10,9 +10,7 @@ import android.webkit.WebViewClient;
 import android.widget.Button;
 
 public class LookupDialog extends Dialog implements android.view.View.OnClickListener {
-
     public Activity context;
-    public Dialog dialog;
     public Button mCloseButton;
     public WebView mWebView;
     public String url;
@@ -30,22 +28,18 @@ public class LookupDialog extends Dialog implements android.view.View.OnClickLis
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.lookup_dialog);
-        mWebView = (WebView) findViewById(R.id.lookupWebview);
+        mWebView = findViewById(R.id.lookupWebview);
         mWebView.setWebViewClient(new WebViewClient());
         mWebView.loadUrl(this.url);
-        mCloseButton = (Button) findViewById(R.id.btn_close);
+        mCloseButton = findViewById(R.id.btn_close);
         mCloseButton.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.btn_close:
-                dismiss();
-                this.onDismiss.run();
-                break;
-            default:
-                break;
+        if (v.getId() == R.id.btn_close) {
+            dismiss();
+            this.onDismiss.run();
         }
     }
 }

@@ -26,7 +26,6 @@ public class NewsWebsites {
         map.put("KO", new Site("소식", "https://news.google.co.kr"));
         map.put("AR", new Site("أخبار", "https://news.google.com/?hl=ar&gl=EG"));
         map.put("EN", new Site("News", "https://news.google.com"));
-
         map.put("HE", new Site("חדשות", "https://news.google.co.il"));
 
         return map.get(localeStr);

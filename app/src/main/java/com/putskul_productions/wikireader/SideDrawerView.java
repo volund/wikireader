@@ -7,8 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +17,7 @@ public class SideDrawerView extends NavigationView {
     private Context mContext;
     private ListView mItemsList;
     private SideDrawerAdapter mItemsAdapter;
-    private OnClickMenu mListener;
+    private SideDrawerListener mListener;
 
     private ImageView mHeader;
 
@@ -63,7 +61,7 @@ public class SideDrawerView extends NavigationView {
     }
 
 
-    public void setListener(OnClickMenu mListener) {
+    public void setListener(SideDrawerListener mListener) {
         this.mListener = mListener;
     }
 
@@ -77,12 +75,12 @@ public class SideDrawerView extends NavigationView {
             }
         }
 
-        mItemsAdapter = new SideDrawerAdapter(mContext, sections, new OnClickMenu() {
+        mItemsAdapter = new SideDrawerAdapter(mContext, sections, new SideDrawerListener() {
             @Override
-            public void onClick(Language language, Site site) {
+            public void onSideDrawerItemClick(Language language, Site site) {
 
                 if (mListener != null)
-                    mListener.onClick(language, site);
+                    mListener.onSideDrawerItemClick(language, site);
             }
         });
         mItemsList.setAdapter(mItemsAdapter);

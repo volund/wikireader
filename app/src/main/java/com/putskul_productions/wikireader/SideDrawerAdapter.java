@@ -1,11 +1,9 @@
 package com.putskul_productions.wikireader;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Color;
-import android.util.TypedValue;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -17,21 +15,14 @@ import android.widget.TextView;
 import java.util.List;
 
 public class SideDrawerAdapter extends BaseAdapter {
-
     private Context mContext;
-    private static Object lastSelectedSection;
-
     private List<Object> mSections;
-    private int currentTextcolor;
-    private OnClickMenu mListener;
+    private SideDrawerListener mListener;
 
-    public SideDrawerAdapter(Context context, List<Object> sections, OnClickMenu listener) {
+    public SideDrawerAdapter(Context context, List<Object> sections, SideDrawerListener listener) {
         mContext = context;
         mSections = sections;
         mListener = listener;
-        if (sections.size() > 0) {
-            lastSelectedSection = sections.get(0);
-        }
     }
 
     @Override
@@ -42,10 +33,7 @@ public class SideDrawerAdapter extends BaseAdapter {
     @Override
     public String getItem(int position) {
         Object obj = mSections.get(position);
-        if (obj instanceof Language) {
-            return ((Language) obj).label;
-        }
-        return ((Site) obj).label;
+        return obj instanceof Language ? ((Language) obj).label : ((Site) obj).label;
     }
 
     @Override
@@ -53,35 +41,24 @@ public class SideDrawerAdapter extends BaseAdapter {
         return position;
     }
 
-    @Override
-    public View getView(final int position, View convertView, ViewGroup parent) {
-        return getCustomView(position, convertView, parent);
+    View convertViewForPosition(int position, View convertView, ViewGroup parent) {
+        if (convertView != null) {
+            return convertView;
+        }
+        LayoutInflater inflater = ((Activity) mContext).getLayoutInflater();
+        convertView = inflater.inflate(R.layout.side_drawer_item, parent, false);
+        MenuItemHolder holder = new MenuItemHolder(convertView);
+        holder.position = position;
+        convertView.setTag(holder);
+        return convertView;
     }
 
-    @SuppressLint("ClickableViewAccessibility")
-    public View getCustomView(final int position, View convertView, ViewGroup parent) {
-        final MenuItemHolder holder;
-
-        if (convertView==null){
-
-            LayoutInflater inflater = ((Activity) mContext).getLayoutInflater();
-            convertView = inflater.inflate(R.layout.side_drawer_item, parent, false);
-            holder = new MenuItemHolder(convertView);
-            convertView.setTag(holder);
-
-        }else {
-
-            holder = (MenuItemHolder) convertView.getTag();
-
-        }
-
-        Resources r = mContext.getResources();
-        int pxMarginSection = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, r.getDisplayMetrics());
-
-        Object obj = mSections.get(position);
-
-        holder.position = position;
+    @Override
+    public View getView(final int position, View convertView, ViewGroup parent) {
+        convertView = convertViewForPosition(position, convertView, parent);
+        final MenuItemHolder holder = (MenuItemHolder)convertView.getTag();
         holder.mTitle.setText(getItem(position));
+        Object obj = mSections.get(position);
 
         if (obj instanceof Language) {
             holder.clickable = false;
@@ -92,6 +69,8 @@ public class SideDrawerAdapter extends BaseAdapter {
         else {
             Site site = (Site)obj;
             Language language = Language.NoLanguage;
+            // This is a hack: find language for site by
+            // looking for "higher up" items in the menu
             for (int i = position; i >= 0; i -= 1) {
                 if ((mSections.get(i) instanceof Language) && (((Language)mSections.get(i)).sites.contains(site))) {
                     language = (Language)mSections.get(i);
@@ -108,43 +87,22 @@ public class SideDrawerAdapter extends BaseAdapter {
         holder.mLayoutItem.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-
-                switch (motionEvent.getActionMasked()){
-                    case MotionEvent.ACTION_DOWN:
-                        if (holder.clickable) {
-                            currentTextcolor = holder.mTitle.getCurrentTextColor();
-                            holder.mTitle.setTextColor(mContext.getResources().getColor(R.color.textInfo));
-                        }
-                        return true;
-
-
-                    case MotionEvent.ACTION_UP:
-                        if (holder.clickable) {
-                            holder.mTitle.setTextColor(currentTextcolor);
-                            mListener.onClick(holder.language, holder.site);
-                        }
-                        return true;
-
-                    case MotionEvent.ACTION_CANCEL:
-                        if (holder.clickable) {
-                            holder.mTitle.setTextColor(currentTextcolor);
-                        }
-                        return true;
-
+                Log.e("WIKIREADER", "DBG MOTION");
+                if (holder.clickable && (motionEvent.getActionMasked() == MotionEvent.ACTION_UP)) {
+                    Log.e("WIKIREADER", "DBG UP");
+                    mListener.onSideDrawerItemClick(holder.language, holder.site);
+                    return true;
                 }
-
-                return false;
+                return (motionEvent.getActionMasked() == MotionEvent.ACTION_DOWN) || (motionEvent.getActionMasked() == MotionEvent.ACTION_MOVE);
             }
         });
-
         return convertView;
-
     }
 
     class MenuItemHolder {
-        View view;
-        TextView mTitle;
         LinearLayout mLayoutItem;
+        TextView mTitle;
+        View view;
         boolean clickable = true;
         Language language;
         Site site;
@@ -155,10 +113,5 @@ public class SideDrawerAdapter extends BaseAdapter {
             mLayoutItem = itemView.findViewById(R.id.layoutItem);
             view = itemView;
         }
-
-    }
-
-    public void setLastSelectedSection(String idSection) {
-        lastSelectedSection = idSection;
     }
 }
