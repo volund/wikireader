@@ -7,10 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ListView;
-
 import java.util.ArrayList;
 import java.util.List;
-
 
 public class SideDrawerView extends NavigationView {
     private LayoutInflater mInflater;
@@ -18,10 +16,8 @@ public class SideDrawerView extends NavigationView {
     private ListView mItemsList;
     private SideDrawerAdapter mItemsAdapter;
     private SideDrawerListener mListener;
-
     private ImageView mHeader;
 
-    //region Constructors
     public SideDrawerView(Context context) {
         super(context);
         mContext = context;
@@ -42,11 +38,9 @@ public class SideDrawerView extends NavigationView {
         super(context, attrs, defStyleAttr);
         mContext = context;
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
         initLayout();
         setData();
     }
-    //endregion
 
     private void initLayout(){
         mInflater.inflate(R.layout.side_drawer, this);

@@ -60,13 +60,14 @@ public class SideDrawerAdapter extends BaseAdapter {
         holder.mTitle.setText(getItem(position));
         Object obj = mSections.get(position);
 
-        if (obj instanceof Language) {
-            holder.clickable = false;
-            holder.mTitle.setTextColor(Color.LTGRAY);
-            holder.mTitle.setTextSize(16);
-            holder.mTitle.setPadding(35, 40, 30, 0);
-        }
-        else {
+        boolean is_site = obj instanceof Site;
+
+        holder.clickable = is_site;
+        holder.mTitle.setTextColor(is_site ? Color.WHITE : Color.LTGRAY);
+        holder.mTitle.setTextSize(is_site ? 22: 16);
+        holder.mTitle.setPadding(35, 40, 30, 0);
+
+        if (is_site) {
             Site site = (Site)obj;
             Language language = Language.NoLanguage;
             // This is a hack: find language for site by
@@ -77,8 +78,6 @@ public class SideDrawerAdapter extends BaseAdapter {
                     break;
                 }
             }
-            holder.mTitle.setTextColor(Color.WHITE);
-            holder.mTitle.setTextSize(22);
             holder.mTitle.setPadding(60, 20, 50, 0);
             holder.site = site;
             holder.language = language;
