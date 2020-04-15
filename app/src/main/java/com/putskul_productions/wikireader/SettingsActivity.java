@@ -13,6 +13,7 @@ public class SettingsActivity extends AppCompatActivity {
     Button mSitesButton;
     TextView mAboutText;
 
+    /*
     final String aboutText = " __        _____ _  _____                   \n" +
             " \\ \\      / /_ _| |/ /_ _|                  \n" +
             "  \\ \\ /\\ / / | || ' / | |                   \n" +
@@ -22,7 +23,18 @@ public class SettingsActivity extends AppCompatActivity {
             "     | |_) |  _|   / _ \\ | | | |  _| | |_) |\n" +
             "     |  _ <| |___ / ___ \\| |_| | |___|  _ < \n" +
             "     |_| \\_\\_____/_/   \\_\\____/|_____|_| \\_\\\n" +
-            "                                            ";
+            "                                            ";*/
+
+    final String aboutText = ""+
+            "       _    _  ____  _  _  ____       \n" +
+            "      ( \\/\\/ )(_  _)( )/ )(_  _)      \n" +
+            "       )    (  _)(_  )  (  _)(_       \n" +
+            "      (__/\\__)(____)(_)\\_)(____)      \n" +
+            " ____  ____    __    ____  ____  ____ \n" +
+            "(  _ \\( ___)  /__\\  (  _ \\( ___)(  _ \\\n" +
+            " )   / )__)  /(__)\\  )(_) ))__)  )   /\n" +
+            "(_)\\_)(____)(__)(__)(____/(____)(_)\\_)\n" +
+            "\n";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

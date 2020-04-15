@@ -13,6 +13,7 @@ public class LicensesActivity extends AppCompatActivity {
         setContentView(R.layout.activity_licenses);
         mLicensesTextView = findViewById(R.id.licensesText);
         mLicensesTextView.setText(licensesText);
+        setTitle("Licenses");
     }
 
 

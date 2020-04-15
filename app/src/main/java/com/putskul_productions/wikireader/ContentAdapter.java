@@ -1,6 +1,7 @@
 package com.putskul_productions.wikireader;
 
 import android.annotation.SuppressLint;
+import android.graphics.Paint;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -44,19 +45,23 @@ public class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.SitesVie
         if (currentLanguage == null) {
             final Language language = languages.get(position);
             holder.label.setText(StringUtils.capitalize(language.label));
+            holder.label.setPaintFlags(language.enabled ?
+                    holder.label.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG :
+                    holder.label.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             holder.deleteIcon.setVisibility(View.GONE);
             holder.subLabel.setText(language.currentDictionary.name);
             holder.enabledCheckbox.setOnCheckedChangeListener(null);
             holder.enabledCheckbox.setVisibility(View.VISIBLE);
             holder.enabledCheckbox.setChecked(language.enabled);
-
             holder.enabledCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                     mOnClickContentListener.onToggleLanguageEnabled(language);
+                    if (!language.enabled) {
+                        notifyDataSetChanged();
+                    }
                 }
             });
-
             holder.layout.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -72,6 +77,7 @@ public class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.SitesVie
         else {
             final Site site = currentLanguage.sites.get(position);
             holder.label.setText(site.label);
+            holder.label.setPaintFlags(holder.label.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
             holder.subLabel.setText(site.address);
             holder.deleteIcon.setVisibility(View.VISIBLE);
             holder.enabledCheckbox.setVisibility(View.GONE);
