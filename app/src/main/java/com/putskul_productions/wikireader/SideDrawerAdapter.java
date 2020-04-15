@@ -86,9 +86,7 @@ public class SideDrawerAdapter extends BaseAdapter {
         holder.mLayoutItem.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                Log.e("WIKIREADER", "DBG MOTION");
                 if (holder.clickable && (motionEvent.getActionMasked() == MotionEvent.ACTION_UP)) {
-                    Log.e("WIKIREADER", "DBG UP");
                     mListener.onSideDrawerItemClick(holder.language, holder.site);
                     return true;
                 }

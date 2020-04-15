@@ -40,10 +40,8 @@ public class WordreferenceDictionaries {
      Dictionary dictionary(String srcLocale, String dstLocale) {
         Locale srcLc = new Locale(srcLocale);
         Locale dstLc = new Locale(dstLocale);
-
         String srcName = srcLc.getDisplayName(dstLc);
         String dstName = dstLc.getDisplayName(dstLc);
-        //String name = "Wordreference (" + srcLocale.toUpperCase() + "-" + dstLocale.toUpperCase() + ")";
         String name = srcName + "->" + dstName + " (Wordreference)";
         String url = "https://www.wordreference.com/" + srcLocale.toLowerCase() + dstLocale.toLowerCase() + "/%s";
         String dstLanguage = dstLc.getDisplayLanguage(dstLc);

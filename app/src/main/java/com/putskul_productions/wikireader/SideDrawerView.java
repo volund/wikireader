@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.design.widget.NavigationView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.ListView;
 import java.util.ArrayList;
@@ -38,7 +37,7 @@ public class SideDrawerView extends NavigationView {
 
     void loadData() {
         List<Object> sections = new ArrayList<>();
-        for (Language language : Storage.shared.enabledLanguages(getContext())) {
+        for (Language language : App.shared.model.enabledLanguages(getContext())) {
             sections.add(language);
             sections.addAll(language.sites);
         }

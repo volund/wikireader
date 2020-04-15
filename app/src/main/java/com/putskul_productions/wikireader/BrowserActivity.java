@@ -41,15 +41,15 @@ public class BrowserActivity extends AppCompatActivity implements CustomWebClien
     }
 
     void loadLanguagesOrLastUrl() {
-        if (Storage.shared.isFreshInstall(this)) {
-            Storage.shared.setLanguages(this, Settings.shared.defaultLanguages());
-            Storage.shared.setIsFreshInstall(this, false);
+        if (App.shared.settings.isFreshInstall(this)) {
+            App.shared.model.setLanguages(this, App.shared.model.defaultLanguages());
+            App.shared.settings.setIsFreshInstall(this, false);
             showActivity(ContentActivity.class);
         }
         else {
-            Language language = Settings.shared.getCurrentLanguage(this);
-            Site site = Settings.shared.getCurrentSite(this);
-            String url = Settings.shared.lastVisitedURL(this, language, site);
+            Language language = App.shared.settings.getCurrentLanguage(this);
+            Site site = App.shared.settings.getCurrentSite(this);
+            String url = App.shared.settings.lastVisitedURL(this, language, site);
             mWebView.loadUrl(url);
         }
     }
@@ -86,7 +86,7 @@ public class BrowserActivity extends AppCompatActivity implements CustomWebClien
             mDrawerLayout.openDrawer(GravityCompat.START);
         }
         else if (id == R.id.HomeButton) {
-            mWebView.loadUrl(Settings.shared.getCurrentSite(this).address);
+            mWebView.loadUrl(App.shared.settings.getCurrentSite(this).address);
         }
         else if ((id == R.id.action_back) && mWebView.canGoBack()) {
             mWebView.goBack();
@@ -117,10 +117,10 @@ public class BrowserActivity extends AppCompatActivity implements CustomWebClien
     @Override
     public void onResume(){
         super.onResume();
-        if (!Storage.shared.hasEnabledLanguages(this)) {
+        if (!App.shared.model.hasEnabledLanguages(this)) {
             mWebView.loadData(no_content_html, "text/html; charset=utf-8", "UTF-8");
         }
-        else if (Settings.shared.currentSiteIsBlank(this)) {
+        else if (App.shared.settings.currentSiteIsBlank(this)) {
             // Does not load correctly after first time selecting content
             // loading from the UI thread after a delay does not fix
             // but for some unknown reason loading it twice fixes it
@@ -132,9 +132,9 @@ public class BrowserActivity extends AppCompatActivity implements CustomWebClien
 
     @Override
     public void onPageStarted(String url) {
-        Language language = Settings.shared.getCurrentLanguage(this);
-        Site site = Settings.shared.getCurrentSite(this);
-        Settings.shared.setLastVisitedURL(this, language, site, url);
+        Language language = App.shared.settings.getCurrentLanguage(this);
+        Site site = App.shared.settings.getCurrentSite(this);
+        App.shared.settings.setLastVisitedURL(this, language, site, url);
         mProgressBar.setVisibility(View.VISIBLE);
     }
 
@@ -158,9 +158,9 @@ public class BrowserActivity extends AppCompatActivity implements CustomWebClien
     // SideDrawerListener
     @Override
     public void onSideDrawerItemClick(Language language, Site site) {
-        Settings.shared.setCurrentLanguage(this, language);
-        Settings.shared.setCurrentSite(this, site);
-        String url = Settings.shared.lastVisitedURL(this, language, site);
+        App.shared.settings.setCurrentLanguage(this, language);
+        App.shared.settings.setCurrentSite(this, site);
+        String url = App.shared.settings.lastVisitedURL(this, language, site);
         shouldClearHistoryOnLoad = true;
         mWebView.loadUrl(url);
         mDrawerLayout.closeDrawers();

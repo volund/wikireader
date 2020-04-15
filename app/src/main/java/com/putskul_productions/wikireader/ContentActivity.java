@@ -31,9 +31,9 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
     }
 
     void setUpRecyclerView() {
-        List<Language> languages = Storage.shared.getLanguages(this);
+        List<Language> languages = App.shared.model.getLanguages(this);
         mAdapter = new ContentAdapter(languages, this);
-        mRecyclerView = (RecyclerView) findViewById(R.id.sitesRecyclerView);
+        mRecyclerView = findViewById(R.id.sitesRecyclerView);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setAdapter(mAdapter);
@@ -71,7 +71,7 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
                 if (!label.trim().equals("")) {
                     Site newSite = new Site(label.trim(), address);
                     mAdapter.currentLanguage.sites.add(newSite);
-                    Storage.shared.updateLanguage(context, mAdapter.currentLanguage);
+                    App.shared.model.updateLanguage(context, mAdapter.currentLanguage);
                     refreshData();
                 }
             }
@@ -80,17 +80,17 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
 
     public void onToggleLanguageEnabled(Language language) {
         language.enabled = !language.enabled;
-        Storage.shared.updateLanguage(this, language);
+        App.shared.model.updateLanguage(this, language);
         if (language.enabled) {
             showDictionarySelectionDialog(language);
         }
-        else if (language.sites.contains(Settings.shared.getCurrentSite(this))) {
-            Settings.shared.setCurrentSite(this, Site.BlankSite);
+        else if (language.sites.contains(App.shared.settings.getCurrentSite(this))) {
+            App.shared.settings.setCurrentSite(this, Site.BlankSite);
         }
     }
 
     void refreshData() {
-        List<Language> languages = Storage.shared.getLanguages(this);
+        List<Language> languages = App.shared.model.getLanguages(this);
         mAdapter.updateData(languages);
     }
 
@@ -101,7 +101,7 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 language.currentDictionary = language.dictionaries.get(which);
-                Storage.shared.updateLanguage(context, language);
+                App.shared.model.updateLanguage(context, language);
                 refreshData();
             }
         });
@@ -114,7 +114,7 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
         dialogs.showOkCancelDialog("Really delete '" + site.label + "'", icon, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 language.sites.remove(site);
-                Storage.shared.updateLanguage(context, language);
+                App.shared.model.updateLanguage(context, language);
                 refreshData();
             }
         });
@@ -139,7 +139,7 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
     }
 
     void showGreetingIfNecessary() {
-        if (!Storage.shared.hasEnabledLanguages(this)) {
+        if (!App.shared.model.hasEnabledLanguages(this)) {
             dialogs.showOkDialog("Welcome to Wikireader!\n\nTap the checkbox on the left for each language you wish to read, then select the dictionary for use with that language");
         }
     }

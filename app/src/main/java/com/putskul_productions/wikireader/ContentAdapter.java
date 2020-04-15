@@ -43,7 +43,7 @@ public class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.SitesVie
     public void onBindViewHolder(final SitesViewHolder holder, int position) {
         if (currentLanguage == null) {
             final Language language = languages.get(position);
-            holder.label.setText(language.label);
+            holder.label.setText(StringUtils.capitalize(language.label));
             holder.deleteIcon.setVisibility(View.GONE);
             holder.subLabel.setText(language.currentDictionary.name);
             holder.enabledCheckbox.setOnCheckedChangeListener(null);

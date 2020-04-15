@@ -35,7 +35,7 @@ public class JavascriptBridge {
         mContext.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Language language = Settings.shared.getCurrentLanguage(act);
+                Language language = App.shared.settings.getCurrentLanguage(act);
                 Dictionary dictionary = language.currentDictionary;
                 String wordURL = dictionary.urlForWord(word);
                 LookupDialog lookupDialog = new LookupDialog(act, wordURL, onDismiss);
