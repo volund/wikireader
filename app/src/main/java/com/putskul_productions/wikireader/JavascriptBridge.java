@@ -1,18 +1,7 @@
 package com.putskul_productions.wikireader;
 
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.util.Log;
-import android.view.ViewGroup;
 import android.webkit.JavascriptInterface;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class JavascriptBridge {
     String lookup_script = "var selectiondiv = document.getElementById('__wikireader_selectiondiv'); selectiondiv.style.display='block'; setTimeout(function() { selectiondiv.style.display='none'; }, 100);";
@@ -61,8 +50,18 @@ public class JavascriptBridge {
     }
 
     @JavascriptInterface
-    public void handleLink(final String relativeHref, String title) {
-        final String[] values = StringUtils.splitToArrayAndAdd(title, " ", "Follow '" + title + "'");
+    public void handleLink(String relativeHref, String title) {
+        if ((title == null) || title.equals("")) {
+            followLink(relativeHref);
+        }
+        else {
+            presentLinkOptions(relativeHref, title);
+        }
+    }
+
+    void presentLinkOptions(final String relativeHref, String title) {
+        String cleanTitle = StringUtils.extractTextFromHtml(title);
+        final String[] values = StringUtils.splitToArrayAndAdd(cleanTitle, " ", "Follow '" + cleanTitle + "'");
         dialogs.showListSelection("", values, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -71,13 +70,17 @@ public class JavascriptBridge {
                     lookupCompositeWord(values[which]);
                 }
                 else {
-                    mContext.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mContext.mWebView.evaluateJavascript("window.location.href = '" + relativeHref + "'", null);
-                        }
-                    });
+                    followLink(relativeHref);
                 }
+            }
+        });
+    }
+
+    void followLink(final String link) {
+        mContext.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mContext.mWebView.evaluateJavascript("window.location.href = '" + link + "'", null);
             }
         });
     }

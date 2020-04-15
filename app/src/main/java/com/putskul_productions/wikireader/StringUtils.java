@@ -3,6 +3,7 @@ package com.putskul_productions.wikireader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.jsoup.Jsoup;
 
 public class StringUtils {
 
@@ -22,5 +23,9 @@ public class StringUtils {
         List<String> list = splitToList(str, delimiter);
         list.add(addition);
         return list.toArray(new String[list.size()]);
+    }
+
+    public static String extractTextFromHtml(String html) {
+        return Jsoup.parse(html).text();
     }
 }
