@@ -6,6 +6,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -107,10 +108,11 @@ public class BrowserActivity extends AppCompatActivity implements CustomWebClien
 
     @Override
     public void onBackPressed() {
-        if ((mDrawerLayout) != null && (mDrawerLayout.isDrawerOpen(GravityCompat.START)))
+        if ((mDrawerLayout) != null && (mDrawerLayout.isDrawerOpen(GravityCompat.START))) {
             mDrawerLayout.closeDrawers();
-        else {
-            super.onBackPressed();
+        }
+        else if (mWebView.canGoBack()) {
+            mWebView.goBack();
         }
     }
 
@@ -141,6 +143,10 @@ public class BrowserActivity extends AppCompatActivity implements CustomWebClien
     @Override
     public void onPageFinished(String URL) {
         mProgressBar.setVisibility(View.INVISIBLE);
+        if(shouldClearHistoryOnLoad){
+            shouldClearHistoryOnLoad = false;
+            mWebView.clearHistory();
+        }
         if (historyBackButton != null) {
             historyBackButton.setEnabled(mWebView.canGoBack());
             historyBackButton.getIcon().setAlpha(mWebView.canGoBack() ? 255 : 100);
@@ -149,10 +155,7 @@ public class BrowserActivity extends AppCompatActivity implements CustomWebClien
             historyForwardButton.setEnabled(mWebView.canGoForward());
             historyForwardButton.getIcon().setAlpha(mWebView.canGoForward() ? 255 : 100);
         }
-        if(shouldClearHistoryOnLoad){
-            shouldClearHistoryOnLoad = false;
-            mWebView.clearHistory();
-        }
+
     }
 
     // SideDrawerListener
