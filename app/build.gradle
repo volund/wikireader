@@ -6,8 +6,8 @@ android {
         applicationId "com.putskul_productions.wikireader"
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 2
-        versionName "1.0"
+        versionCode 3
+        versionName "0.9.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
