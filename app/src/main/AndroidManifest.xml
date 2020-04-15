@@ -11,12 +11,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ContentActivity">
-        </activity>
-
-        <activity android:name=".SettingsActivity"
+        <activity android:name=".LicensesActivity" android:parentActivityName=".SettingsActivity"></activity>
+        <activity android:name=".ContentActivity"></activity>
+        <activity
+            android:name=".SettingsActivity"
             android:label="@string/settings_activity_title"
-            android:parentActivityName="com.putskul_productions.wikireader.BrowserActivity" >
+            android:parentActivityName=".BrowserActivity">
 
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data

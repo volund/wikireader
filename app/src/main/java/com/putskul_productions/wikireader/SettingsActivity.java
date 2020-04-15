@@ -6,9 +6,23 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 public class SettingsActivity extends AppCompatActivity {
+    Button mLicensesButton;
     Button mSitesButton;
+    TextView mAboutText;
+
+    final String aboutText = " __        _____ _  _____                   \n" +
+            " \\ \\      / /_ _| |/ /_ _|                  \n" +
+            "  \\ \\ /\\ / / | || ' / | |                   \n" +
+            "   \\ V  V /  | || . \\ | |                   \n" +
+            "    \\_/\\_/  |___|_|\\_\\___|____  _____ ____  \n" +
+            "     |  _ \\| ____|  / \\  |  _ \\| ____|  _ \\ \n" +
+            "     | |_) |  _|   / _ \\ | | | |  _| | |_) |\n" +
+            "     |  _ <| |___ / ___ \\| |_| | |___|  _ < \n" +
+            "     |_| \\_\\_____/_/   \\_\\____/|_____|_| \\_\\\n" +
+            "                                            ";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,11 +32,21 @@ public class SettingsActivity extends AppCompatActivity {
         setTitle("Settings");
 
         final Context context = this;
+        mLicensesButton = findViewById(R.id.licensesButton);
         mSitesButton = findViewById(R.id.languagesAndSites);
+        mAboutText = findViewById(R.id.aboutText);
+        mAboutText.setText(aboutText);
         mSitesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, ContentActivity.class);
+                startActivity(intent);
+            }
+        });
+        mLicensesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, LicensesActivity.class);
                 startActivity(intent);
             }
         });
