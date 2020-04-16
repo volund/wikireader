@@ -16,7 +16,6 @@ public class LicensesActivity extends AppCompatActivity {
         setTitle("Licenses");
     }
 
-
     final String licensesText = "#### JSoup\n\nThe jsoup code-base (including source and compiled packages) are distributed under the open source MIT license as described below.\n" +
             "The MIT License\n" +
             "\n" +

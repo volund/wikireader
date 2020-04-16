@@ -16,6 +16,7 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
     RecyclerView mRecyclerView;
     ContentAdapter mAdapter;
     MenuItem addItemButton;
+    MenuItem helpItemButton;
     Dialogs dialogs;
 
     @Override
@@ -42,6 +43,7 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.sites_menu, menu);
+        helpItemButton = menu.findItem(R.id.helpButton);
         addItemButton = menu.findItem(R.id.addButton);
         addItemButton.setVisible(false);
         return super.onCreateOptionsMenu(menu);
@@ -52,6 +54,9 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
         int id = item.getItemId();
         if (id == R.id.addButton) {
             showAddSiteDialogs();
+        }
+        if (id == R.id.helpButton) {
+            showGreeting();
         }
         else {
             onBackPressed();
@@ -124,6 +129,7 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
     public void onSelectionChanged(Language language) {
         setTitle(language != null ? language.label : "Content");
         addItemButton.setVisible(language != null);
+        helpItemButton.setVisible(language == null);
     }
 
     @Override
@@ -140,7 +146,11 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
 
     void showGreetingIfNecessary() {
         if (!App.shared.model.hasEnabledLanguages(this)) {
-            dialogs.showOkDialog("Welcome to Wikireader!\n\nTap the checkbox on the left for each language you wish to read, then select the dictionary for use with that language");
+            showGreeting();
         }
+    }
+
+    void showGreeting() {
+        dialogs.showOkDialog("Welcome to Wikireader!\n\nTap the checkbox [ ] for each language you wish to read, then select a dictionary.\n\nPress '<-' when you are done");
     }
 }
