@@ -151,6 +151,6 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
     }
 
     void showGreeting() {
-        dialogs.showOkDialog("Welcome to Wikireader!\n\nTap the checkbox [ ] for each language you wish to read, then select a dictionary.\n\nPress '<-' when you are done");
+        dialogs.showOkDialog("Tap the checkbox ☑ for each language you wish to read, then select a dictionary");
     }
 }

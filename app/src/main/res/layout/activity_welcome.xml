@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#ece6ff"
     tools:context=".WelcomeActivity">
 
     <TextView
@@ -13,7 +14,7 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="20dp"
-        android:text="Welcome to Wikireader!\n\nThis app allows you to read websites like wikipedia in a foreign language. When you see a word you do not understand, double tap it to look it up in the dictionary:"
+        android:text="Welcome to Wikireader!\n\nIn this app you can read websites in a foreign language. Double tap a word to look it up in the dictionary:"
         android:textColor="#282828"
         android:textSize="20dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -33,7 +34,7 @@
         app:srcCompat="@drawable/intro1" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/selectLanguagesButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
