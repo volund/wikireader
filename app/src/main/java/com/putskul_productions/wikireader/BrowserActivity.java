@@ -45,7 +45,8 @@ public class BrowserActivity extends AppCompatActivity implements CustomWebClien
         if (App.shared.settings.isFreshInstall(this)) {
             App.shared.model.setLanguages(this, App.shared.model.defaultLanguages());
             App.shared.settings.setIsFreshInstall(this, false);
-            showActivity(ContentActivity.class);
+            //showActivity(ContentActivity.class);
+            showActivity(WelcomeActivity.class);
         }
         else {
             Language language = App.shared.settings.getCurrentLanguage(this);
