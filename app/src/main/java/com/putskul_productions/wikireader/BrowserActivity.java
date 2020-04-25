@@ -10,13 +10,14 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebBackForwardList;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.LinearLayout;
 
 public class BrowserActivity extends AppCompatActivity implements CustomWebClient.WebClientListener, SideDrawerListener {
     String no_content_html = "<html><body style='background: #ece6ff; text-align: center; color: #444; '><br><br><p>No content selected, try the settings<p></body></html>";
-    String no_site_selected_html = "<html><body style='background: #ece6ff; text-align: center; color: #444;'><br><br><p>Press \uD83C\uDF10 to select a website.</p><p><strong>Double-tap a word</strong> to see the dictionary definition</p></body></html>";
+    String no_site_selected_html = "<html><body style='background: #ece6ff; text-align: center; color: #444;'><br><br><p>Press \uD83C\uDF10 to select a website.</p></body></html>";
 
     protected SideDrawerView mSideDrawer;
     protected DrawerLayout mDrawerLayout;
@@ -92,6 +93,7 @@ public class BrowserActivity extends AppCompatActivity implements CustomWebClien
         }
         else if ((id == R.id.action_back) && mWebView.canGoBack()) {
             mWebView.goBack();
+
         }
         else if ((id == R.id.action_forward) && mWebView.canGoForward())  {
             mWebView.goForward();

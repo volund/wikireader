@@ -2,19 +2,23 @@ package com.putskul_productions.wikireader;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 
 import java.util.List;
 
 
-public class ContentActivity extends AppCompatActivity implements ContentAdapter.OnClickContentListener {
+public class ContentActivity extends AppCompatActivity implements ContentAdapter.OnClickContentListener, View.OnClickListener {
     RecyclerView mRecyclerView;
     ContentAdapter mAdapter;
+    Button mStartReadingButton;
     MenuItem addItemButton;
     MenuItem helpItemButton;
     Dialogs dialogs;
@@ -25,10 +29,12 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
         setTitle("Content");
         setContentView(R.layout.content_activity);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         dialogs = new Dialogs(this);
         setUpRecyclerView();
         showGreetingIfNecessary();
+        mStartReadingButton = findViewById(R.id.startReadingButton);
+        mStartReadingButton.setOnClickListener(this);
+        updateStartReadingButtonState();
     }
 
     void setUpRecyclerView() {
@@ -38,6 +44,17 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setAdapter(mAdapter);
+    }
+
+    void updateStartReadingButtonState() {
+        Bundle bundle = getIntent().getExtras();
+        if ((bundle != null) && bundle.getBoolean("is-first-run")) {
+            mStartReadingButton.setVisibility(View.VISIBLE);
+        }
+        else {
+            mStartReadingButton.setVisibility(View.GONE);
+        }
+        mStartReadingButton.setEnabled(App.shared.model.hasEnabledLanguages(this));
     }
 
     @Override
@@ -92,6 +109,7 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
         else if (language.sites.contains(App.shared.settings.getCurrentSite(this))) {
             App.shared.settings.setCurrentSite(this, Site.BlankSite);
         }
+        updateStartReadingButtonState();
     }
 
     void refreshData() {
@@ -108,6 +126,7 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
                 language.currentDictionary = language.dictionaries.get(which);
                 App.shared.model.updateLanguage(context, language);
                 refreshData();
+                updateStartReadingButtonState();
             }
         });
     }
@@ -127,7 +146,7 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
 
     @Override
     public void onSelectionChanged(Language language) {
-        setTitle(language != null ? language.label : "Content");
+        setTitle(language != null ? StringUtils.capitalize(language.label) : "Content");
         addItemButton.setVisible(language != null);
         helpItemButton.setVisible(language == null);
     }
@@ -151,6 +170,12 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
     }
 
     void showGreeting() {
-        dialogs.showOkDialog("Tap the checkbox ☑ for each language you wish to read, then select a dictionary");
+        dialogs.showOkDialog("Tap the checkbox ☑ for each language you wish to read, then select a dictionary.\n\nTap a language to add/remove sites");
+    }
+
+    // StartReading button
+    @Override
+    public void onClick(View v) {
+        finish();
     }
 }

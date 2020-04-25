@@ -74,6 +74,11 @@ public class Model {
         hebrew.sites.add(new Site("וויקיפידיה", "https://wikipedia.co.il"));
         hebrew.sites.add(newsWebsites.websiteForLocale("HE"));
 
+        Language amharic = new Language("አማርኛ");
+        amharic.sites.add(new Site("ወሬ፣ ዜና", "https://www.bbc.com/amharic"));
+        amharic.sites.add(new Site("ውክፔዲያ", "https://am.wikipedia.org/"));
+
+
         languageMap.get("IT").sites.add(new Site("Ascoltando le cicale", "https://valerianeglia.wordpress.com/"));
         languageMap.get("FR").sites.add(new Site("En écoutant les cigales", "https://valerianeglia.wordpress.com/en-ecoutant-les-cigales/"));
 
@@ -81,7 +86,10 @@ public class Model {
         //hebrew.dictionaries.add(new Dictionary("עברית - עברית (מילוג)", "עברית", "https://milog.co.il/%s"));
         hebrew.dictionaries.add(new Dictionary("עברית - עברית (מורפיקס)", "עברית", "https://www.morfix.co.il/he/%s"));
         hebrew.dictionaries.add(new Dictionary("Hebrew - English (Morfix)", "English", "https://www.morfix.co.il/en/%s"));
+        amharic.dictionaries.add(new Dictionary("አማርኛ - እንግሊዝኛ (Abyssinica)", "English", "https://dictionary.abyssinica.com/%s"));
         languageMap.get("EN").dictionaries.add(new Dictionary("אנגלית - עברית (מורפיקס)", "עברית", "https://www.morfix.co.il/en/%s"));
+        languageMap.get("EN").dictionaries.add(new Dictionary("English - Amharic (Abyssinica)", "አማርኛ", "https://dictionary.abyssinica.com/%s"));
+
 
         List<Language> languages = new ArrayList<Language>();
         languages.add(languageMap.get("EN"));
@@ -91,6 +99,7 @@ public class Model {
         languages.add(languageMap.get("PT"));
         languages.add(hebrew);
         languages.add(languageMap.get("AR"));
+        languages.add(amharic);
         languages.add(languageMap.get("CA"));
         languages.add(languageMap.get("DE"));
         languages.add(languageMap.get("NL"));

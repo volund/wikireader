@@ -65,7 +65,6 @@ public class CustomWebClient extends WebViewClient {
             "}";
 
 
-
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, String urlNewString) {
         webViewPreviousState = PAGE_REDIRECTED;

@@ -16,7 +16,14 @@ public class LicensesActivity extends AppCompatActivity {
         setTitle("Licenses");
     }
 
-    final String licensesText = "#### JSoup\n\nThe jsoup code-base (including source and compiled packages) are distributed under the open source MIT license as described below.\n" +
+    final String licensesText = "\nWikireader - copyright 2020 Amos Joshua\n\n" +
+            "#### App icon / menu header \n" +
+            "Source: https://www.clipart.email/download/1552527.html\n" +
+            "\n" +
+            "#### Finger tap icon\n" +
+            "Source : https://pngimage.net/finger-tap-png-1/\n" +
+            "\n" +
+            "#### JSoup\n\nThe jsoup code-base (including source and compiled packages) are distributed under the open source MIT license as described below.\n" +
             "The MIT License\n" +
             "\n" +
             "Copyright � 2009 - 2020 Jonathan Hedley (https://jsoup.org/)\n" +

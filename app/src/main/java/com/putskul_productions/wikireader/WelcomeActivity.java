@@ -20,7 +20,11 @@ public class WelcomeActivity extends AppCompatActivity {
         mSelectLanguagesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                finish();
                 Intent intent = new Intent(context, ContentActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putBoolean("is-first-run", true);
+                intent.putExtras(bundle);
                 startActivity(intent);
             }
         });
