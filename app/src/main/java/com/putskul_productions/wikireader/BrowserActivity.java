@@ -166,9 +166,10 @@ public class BrowserActivity extends AppCompatActivity implements CustomWebClien
     public void onSideDrawerItemClick(Language language, Site site) {
         App.shared.settings.setCurrentLanguage(this, language);
         App.shared.settings.setCurrentSite(this, site);
-        String url = App.shared.settings.lastVisitedURL(this, language, site);
+        String lastUrl = App.shared.settings.lastVisitedURL(this, language, site);
+
         shouldClearHistoryOnLoad = true;
-        mWebView.loadUrl(url);
+        mWebView.loadUrl(site.address);
         mDrawerLayout.closeDrawers();
     }
 }
