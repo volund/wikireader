@@ -66,8 +66,8 @@ public class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.SitesVie
                 @Override
                 public boolean onTouch(View view, MotionEvent motionEvent) {
                     if (motionEvent.getActionMasked() == MotionEvent.ACTION_UP) {
-                            mOnClickContentListener.onSelectionChanged(language);
                             currentLanguage = language;
+                            mOnClickContentListener.onSelectionChanged(language);
                             notifyDataSetChanged();
                     }
                     return true;

@@ -71,6 +71,7 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
         int id = item.getItemId();
         if (id == R.id.addButton) {
             showAddSiteDialogs();
+            return true;
         }
         if (id == R.id.helpButton) {
             showGreeting();
@@ -85,7 +86,7 @@ public class ContentActivity extends AppCompatActivity implements ContentAdapter
         final Context context = this;
         dialogs.showDoubleInputDialog("New Site", "Label", "Address", new Dialogs.DoubleInputListener(){
             @Override
-            public void onOk(String address, String label) {
+            public void onOk(String label, String address) {
                 address = address.trim();
                 if (!address.startsWith("http")) {
                     address = "http://" + address;
