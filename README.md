@@ -1,13 +1,15 @@
 
-# WikiReader - Dictionary enabled Wikipedia Reader
+# Wikireader - Dictionary enabled Wikipedia Reader
 
 Wikireader is a website reader with a built in dictionary, primarily
 targeted at reading wikipedia.
 
+![wikireader-screenshot-2](https://user-images.githubusercontent.com/783888/142589295-b1db2aba-1a1c-4050-82b8-e7fa43cbbe28.png)
+
 
 ## Installation (Android only)
 
-Find it on the play store: [WikiReader](https://play.google.com/store/apps/details?id=com.putskul_productions.wikireader)
+Find it on the play store: [Wikireader](https://play.google.com/store/apps/details?id=com.putskul_productions.wikireader)
 
 Or clone and build it from source. 
 
