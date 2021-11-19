@@ -1,5 +1,5 @@
 
-# Wikireader - Dictionary enabled Wikipedia Reader
+# Wikireader - Dictionary Enabled Wikipedia Reader
 
 Wikireader is a website reader with a built in dictionary, primarily
 targeted at reading wikipedia.
